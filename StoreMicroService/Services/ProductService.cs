@@ -6,7 +6,7 @@ using StoreMicroService.ViewModels.Product;
 
 namespace StoreMicroService.Services
 {
-  public class ProductService : DeafultService, IProductService
+  public class ProductService : DefaultService, IProductService
   {
     public Result<string> AddProduct(AddProductViewModel product)
     {
@@ -55,6 +55,10 @@ namespace StoreMicroService.Services
       {
         return Result.Failure<List<GetProductViewModel>>(e.Message);
       }
+    }
+
+    public ProductService(StoreContext storeContext) : base(storeContext)
+    {
     }
   }
 }

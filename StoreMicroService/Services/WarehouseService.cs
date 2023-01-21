@@ -7,7 +7,7 @@ using StoreMicroService.ViewModels.Warehouse;
 
 namespace StoreMicroService.Services
 {
-  public class WarehouseService : DeafultService,IWarehouseService
+  public class WarehouseService : DefaultService,IWarehouseService
   {
     public Result<string> AddWarehouse(AddWarehouseViewModel addWarehouse)
     {
@@ -119,6 +119,10 @@ namespace StoreMicroService.Services
       {
         return Result.Failure<WarehouseDetailsViewModel>(e.Message);
       }
+    }
+
+    public WarehouseService(StoreContext storeContext) : base(storeContext)
+    {
     }
   }
 }

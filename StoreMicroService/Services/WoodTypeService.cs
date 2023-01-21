@@ -4,7 +4,7 @@ using StoreMicroService.Services.Interfaces;
 
 namespace StoreMicroService.Services
 {
-  public class WoodTypeService : DeafultService,IWoodTypeService
+  public class WoodTypeService : DefaultService,IWoodTypeService
   {
     public Result<string> AddWoodType(string name)
     {
@@ -37,6 +37,10 @@ namespace StoreMicroService.Services
     public Result<List<WoodType>> GetWoodTypes()
     {
       return Result.Success(StoreContext.WoodTypes.ToList());
+    }
+
+    public WoodTypeService(StoreContext storeContext) : base(storeContext)
+    {
     }
   }
 }

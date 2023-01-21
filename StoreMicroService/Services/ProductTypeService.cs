@@ -4,7 +4,7 @@ using StoreMicroService.Services.Interfaces;
 
 namespace StoreMicroService.Services
 {
-  public class ProductTypeService : DeafultService,IProductTypeService
+  public class ProductTypeService : DefaultService,IProductTypeService
   {
     public Result<string> AddProductType(string productName)
     {
@@ -37,6 +37,10 @@ namespace StoreMicroService.Services
     public Result<List<ProductType>> GetProductTypes()
     {
       return Result.Success(StoreContext.ProductTypes.ToList());
+    }
+
+    public ProductTypeService(StoreContext storeContext) : base(storeContext)
+    {
     }
   }
 }
