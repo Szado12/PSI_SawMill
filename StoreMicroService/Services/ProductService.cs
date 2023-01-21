@@ -1,11 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using StoreMicroService.Models;
 using StoreMicroService.Services.Interfaces;
 using StoreMicroService.ViewModels.Product;
 
 namespace StoreMicroService.Services
 {
-  public class ProductService : BaseService, IProductService
+  public class ProductService : DeafultService, IProductService
   {
     public Result<string> AddProduct(AddProductViewModel product)
     {
@@ -43,7 +44,17 @@ namespace StoreMicroService.Services
 
     public Result<List<GetProductViewModel>> GetAllProducts()
     {
-      throw new NotImplementedException();
+      try
+      {
+        return Result.Success(Mapper.Map<List<Product>, List<GetProductViewModel>>(StoreContext.Products
+          .Include(x=>x.WoodType)
+          .Include(x=>x.ProductType)
+          .ToList()));
+      }
+      catch (Exception e)
+      {
+        return Result.Failure<List<GetProductViewModel>>(e.Message);
+      }
     }
   }
 }
