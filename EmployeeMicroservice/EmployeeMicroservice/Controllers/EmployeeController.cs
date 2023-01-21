@@ -1,4 +1,5 @@
 ﻿using EmployeeMicroservice.Services.Interfaces;
+using EmployeeMicroservice.Utils;
 using EmployeeMicroservice.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,47 +21,41 @@ namespace EmployeeMicroservice.Controllers
         [Route("all")]
         public IActionResult GetEmployees()
         {
-            var x = _employeeService.GetEmployees();
-            return Ok(x);
+            return _employeeService.GetEmployees().ToActionResult();
         }
 
         [HttpGet]
         [Route("{id}")]
         public IActionResult GetEmployees([FromRoute]int id)
         {
-            var x = _employeeService.GetEmployee(id);
-            return Ok(x);
+            return _employeeService.GetEmployee(id).ToActionResult();
         }
 
         [HttpPost]
         public IActionResult AddEmployee(AddEmployeeView data)
         {
-            var x = _employeeService.AddEmployee(data);
-            return Ok(x);
+            return _employeeService.AddEmployee(data).ToActionResult();
         }
 
         [HttpDelete]
         [Route("{id}")]
         public IActionResult DeleteEmployee([FromRoute] int id)
         {
-            var x = _employeeService.DeleteEmployee(id);
-            return Ok(x);
+            return _employeeService.DeleteEmployee(id).ToActionResult();
         }
 
         [HttpPut]
         [Route("{id}")]
         public IActionResult EditEmployee([FromRoute] int id, EditEmployeeData data)
         {
-            var x = _employeeService.EditEmployee(id, data);
-            return Ok(x);
+            return _employeeService.EditEmployee(id, data).ToActionResult();
         }
 
         [HttpGet]
         [Route("types")]
         public IActionResult EmployeesTypes()
         {
-            var x = _employeeService.GetEmployeeTypes();
-            return Ok(x);
+            return _employeeService.GetEmployeeTypes().ToActionResult();
         }
     }
 }
