@@ -27,9 +27,10 @@ namespace EmployeeMicroservice.Services
             if(employeeData.EmployeeId == null)
                 return Result.Failure<EmployeeView>($"Adding employee failed.");
 
-            var newEmployeeLoginData = Mapper.Map<AddEmployeeView, LoginData>(employeeData);
-            EmployeeContext.LoginData.Add(newEmployeeLoginData);
-            EmployeeContext.SaveChanges();
+                var newEmployeeLoginData = Mapper.Map<AddEmployeeView, LoginData>(employeeData);
+                EmployeeContext.LoginData.Add(newEmployeeLoginData);
+                EmployeeContext.SaveChanges();
+            }
 
             return GetEmployee(employeeData.EmployeeId ?? 0);
         }
@@ -39,13 +40,13 @@ namespace EmployeeMicroservice.Services
             var employeeLoginDataToDelete = EmployeeContext.LoginData.Where(x => x.EmployeeId == id).FirstOrDefault();
             if (employeeLoginDataToDelete == null)
                 return Result.Failure<bool>($"Deleting user with id {id} failed");
-            EmployeeContext.LoginData.Remove(employeeLoginDataToDelete);
+                EmployeeContext.LoginData.Remove(employeeLoginDataToDelete);
             EmployeeContext.SaveChanges();
 
             var employeeToDelete = EmployeeContext.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
             if (employeeToDelete == null)
                 return Result.Failure<bool>($"Deleting user with id {id} failed");
-            EmployeeContext.Employees.Remove(employeeToDelete);
+                EmployeeContext.Employees.Remove(employeeToDelete);
             var result = EmployeeContext.SaveChanges() > 0;
 
             if (result) 
@@ -60,10 +61,10 @@ namespace EmployeeMicroservice.Services
             var employeeToEdit = EmployeeContext.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
             if (employeeToEdit == null)
                 return Result.Failure<bool>($"Editing user with id {id} failed");
-            employeeToEdit.EmployeeTypeId = employeeData.EmployeeTypeId;
-            employeeToEdit.FirstName = _encryptionService.EncryptData(employeeData.FirstName);
-            employeeToEdit.LastName = _encryptionService.EncryptData(employeeData.LastName);
-            employeeToEdit.IsBlocked = employeeData.IsBlocked;
+                employeeToEdit.EmployeeTypeId = employeeData.EmployeeTypeId;
+                employeeToEdit.FirstName = _encryptionService.EncryptData(employeeData.FirstName);
+                employeeToEdit.LastName = _encryptionService.EncryptData(employeeData.LastName);
+                employeeToEdit.IsBlocked = employeeData.IsBlocked;
 
             var result = EmployeeContext.SaveChanges() > 0;
 
