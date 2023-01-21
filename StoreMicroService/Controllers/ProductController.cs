@@ -4,6 +4,8 @@ using StoreMicroService.Models;
 using StoreMicroService.Services.Interfaces;
 using StoreMicroService.Utils;
 using StoreMicroService.ViewModels.Product;
+using StoreMicroService.ViewModels.ProductType;
+using StoreMicroService.ViewModels.WoodType;
 
 namespace StoreMicroService.Controllers
 {
@@ -56,9 +58,9 @@ namespace StoreMicroService.Controllers
 
     [HttpPut]
     [Route("WoodType")]
-    public IActionResult UpdateWoodType(WoodType woodType)
+    public IActionResult UpdateWoodType(WoodTypeModel woodType)
     {
-      return _woodTypeService.UpdateWoodType(woodType.WoodTypeId,woodType.Name).ToActionResult();
+      return _woodTypeService.UpdateWoodType(woodType).ToActionResult();
     }
 
     [HttpGet]
@@ -77,9 +79,9 @@ namespace StoreMicroService.Controllers
 
     [HttpPut]
     [Route("ProductType")]
-    public IActionResult UpdateProductType(ProductType productType)
+    public IActionResult UpdateProductType(ProductTypeModel productType)
     {
-      return _productTypeService.UpdateProductType(productType.ProductTypeId, productType.Name).ToActionResult();
+      return _productTypeService.UpdateProductType(productType).ToActionResult();
     }
 
   }

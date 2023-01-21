@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using StoreMicroService.Models;
+using StoreMicroService.ViewModels.ProductType;
 
 namespace StoreMicroService.Services.Interfaces
 {
@@ -7,7 +8,7 @@ namespace StoreMicroService.Services.Interfaces
   {
     Result<string> AddProductType(string productName);
     Result<string> RemoveProductType(int productTypeId);
-    Result<string> UpdateProductType(int productTypeId, string updatedName);
-    Result<List<ProductType>> GetProductTypes();
+    Result<string> UpdateProductType(ProductTypeModel productType);
+    Result<List<ProductTypeModel>> GetProductTypes();
   }
 }

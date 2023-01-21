@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using StoreMicroService.Models;
 using StoreMicroService.Services.Interfaces;
+using StoreMicroService.ViewModels.WoodType;
 
 namespace StoreMicroService.Services
 {
@@ -22,21 +23,21 @@ namespace StoreMicroService.Services
       throw new NotImplementedException();
     }
 
-    public Result<string> UpdateWoodType(int woodTypeId, string updatedName)
+    public Result<string> UpdateWoodType(WoodTypeModel woodType)
     {
-      var woodTypeToChange = StoreContext.WoodTypes.FirstOrDefault(x => x.WoodTypeId == woodTypeId);
+      var woodTypeToChange = StoreContext.WoodTypes.FirstOrDefault(x => x.WoodTypeId == woodType.WoodTypeId);
       if (woodTypeToChange == null)
-        return Result.Failure<string>($"Wood type with id:{woodTypeId} doesn't exist");
+        return Result.Failure<string>($"Wood type with id:{woodType.WoodTypeId} doesn't exist");
 
-      woodTypeToChange.Name = updatedName;
+      woodTypeToChange.Name = woodType.Name;
       StoreContext.SaveChanges();
 
       return Result.Success("Wood type updated");
     }
 
-    public Result<List<WoodType>> GetWoodTypes()
+    public Result<List<WoodTypeModel>> GetWoodTypes()
     {
-      return Result.Success(StoreContext.WoodTypes.ToList());
+      return Result.Success(Mapper.Map<List<WoodType>,List<WoodTypeModel>>(StoreContext.WoodTypes.ToList()));
     }
 
     public WoodTypeService(StoreContext storeContext) : base(storeContext)
