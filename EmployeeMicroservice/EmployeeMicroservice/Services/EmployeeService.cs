@@ -30,7 +30,6 @@ namespace EmployeeMicroservice.Services
                 var newEmployeeLoginData = Mapper.Map<AddEmployeeView, LoginData>(employeeData);
                 EmployeeContext.LoginData.Add(newEmployeeLoginData);
                 EmployeeContext.SaveChanges();
-            }
 
             return GetEmployee(employeeData.EmployeeId ?? 0);
         }
