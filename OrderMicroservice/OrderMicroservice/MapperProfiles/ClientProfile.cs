@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using OrderMicroservice.Models;
 using OrderMicroservice.ModelViews;
-using OrderMicroservice.ModelViews.Client;
 using OrderMicroservice.Services;
 
 namespace OrderMicroservice.MapperProfiles

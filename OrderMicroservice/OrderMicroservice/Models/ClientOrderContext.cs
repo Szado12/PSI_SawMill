@@ -25,6 +25,12 @@ public partial class ClientOrderContext : DbContext
 
     public virtual DbSet<LoginDatum> LoginData { get; set; }
 
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+
+    public virtual DbSet<OrderState> OrderStates { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ProductType> ProductTypes { get; set; }
@@ -107,6 +113,47 @@ public partial class ClientOrderContext : DbContext
                 .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LoginData_Employees");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.Property(e => e.AcceptanceDate).HasColumnType("date");
+            entity.Property(e => e.CreationDate).HasColumnType("date");
+            entity.Property(e => e.OrderNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Client).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.ClientId)
+                .HasConstraintName("FK__Orders__ClientId__4316F928");
+
+            entity.HasOne(d => d.OrderState).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.OrderStateId)
+                .HasConstraintName("FK__Orders__OrderSta__440B1D61");
+        });
+
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.Property(e => e.Amount)
+                .HasMaxLength(10)
+                .IsFixedLength();
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__OrderDeta__Order__44FF419A");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__OrderDeta__Produ__45F365D3");
+        });
+
+        modelBuilder.Entity<OrderState>(entity =>
+        {
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Product>(entity =>

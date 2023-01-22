@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using OrderMicroservice.Models;
-using OrderMicroservice.ModelViews.Client;
+using OrderMicroservice.ModelViews;
 using OrderMicroservice.Services.Interfaces;
 
 namespace OrderMicroservice.Services

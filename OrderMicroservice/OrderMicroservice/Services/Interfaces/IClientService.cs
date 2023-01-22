@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using OrderMicroservice.ModelViews.Client;
+using OrderMicroservice.ModelViews;
 
 namespace OrderMicroservice.Services.Interfaces
 {

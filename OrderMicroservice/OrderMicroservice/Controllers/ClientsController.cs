@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OrderMicroservice.ModelViews.Client;
+using OrderMicroservice.ModelViews;
 using OrderMicroservice.Services.Interfaces;
 using OrderMicroservice.Utils;
 
@@ -17,7 +17,6 @@ namespace OrderMicroservice.Controllers
             _clientService = clientService;
         }
 
-        [HttpGet]
         [HttpGet]
         public IActionResult GetClients()
         {
