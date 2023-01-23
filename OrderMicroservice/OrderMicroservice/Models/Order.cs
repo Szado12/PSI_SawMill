@@ -15,7 +15,11 @@ public partial class Order
 
     public DateTime? AcceptanceDate { get; set; }
 
+    public int? DeliveryId { get; set; }
+
     public virtual Client? Client { get; set; }
+
+    public virtual Delivery? Delivery { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; } = new List<OrderDetail>();
 

@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using OrderMicroservice.Models;
-using OrderMicroservice.ModelViews;
+using OrderMicroservice.ModelViews.Orders;
 
 namespace OrderMicroservice.Services.Interfaces
 {

@@ -15,6 +15,8 @@ public partial class Employee
 
     public byte[] FirstName { get; set; } = null!;
 
+    public virtual ICollection<Delivery> Deliveries { get; } = new List<Delivery>();
+
     public virtual EmployeeType? EmployeeType { get; set; }
 
     public virtual ICollection<LoginDatum> LoginData { get; } = new List<LoginDatum>();

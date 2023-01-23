@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 var context = new ClientOrderContext();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddSingleton<IOrderService, OrderService>(x => new OrderService(context));
+builder.Services.AddSingleton<IDeliveryService, DeliveryService>(x => new DeliveryService(context));
 builder.Services.AddSingleton<IClientService, ClientService>(
     (IServiceProvider employeeService) => new ClientService(context, employeeService.GetRequiredService<IEncryptionService>()));
 

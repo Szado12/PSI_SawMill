@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OrderMicroservice.ModelViews;
+using OrderMicroservice.ModelViews.Orders;
 using OrderMicroservice.Services.Interfaces;
 using OrderMicroservice.Utils;
 

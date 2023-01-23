@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using OrderMicroservice.Models;
 using OrderMicroservice.ModelViews;
+using OrderMicroservice.ModelViews.Deliveries;
+using OrderMicroservice.ModelViews.Orders;
 using OrderMicroservice.Services.Interfaces;
 
 namespace OrderMicroservice.Services
@@ -29,8 +31,29 @@ namespace OrderMicroservice.Services
 
                   cfg.CreateMap<AddressView, Address>();
 
+                  cfg.CreateMap<Client, DeliveryClientView>()
+                    .ForMember(x => x.FirstName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.FirstName)))
+                    .ForMember(x => x.LastName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.LastName)));
+
+                  cfg.CreateMap<Employee, DelivererView>()
+                      .ForMember(x => x.FirstName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.FirstName)))
+                      .ForMember(x => x.LastName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.LastName)));
+
+                  cfg.CreateMap<Delivery, DeliveryView>()
+                    .ForMember(x => x.State, opt => opt.MapFrom(src => src.DeliveryState.Name))
+                    .ForMember(x => x.DeliveryAddress, opt => opt.MapFrom(src => src.Orders.First().Client.Address))
+                    .ForMember(x => x.OrderCreationDate, opt => opt.MapFrom(src => src.Orders.First().CreationDate))
+                    .ForMember(x => x.OrderId, opt => opt.MapFrom(src => src.Orders.First().OrderId))
+                    .ForMember(x => x.Client, opt => opt.MapFrom(src => src.Orders.First().Client))
+                    .ForMember(x => x.Deliverer, opt => opt.MapFrom(src => src.Deliverer));
+
                   cfg.CreateMap<ModifyOrderDetailView, OrderDetail>();
+
                   cfg.CreateMap<ModifyOrderView, Order>();
+
+                  //cfg.CreateMap<AddOrderView, Delivery>()
+                  //  .ForMember(x => x.DeliveryStateId, opt => opt.MapFrom(src => (int)DeliveryStateEnum.Created));
+
                   cfg.CreateMap<AddOrderView, Order>()
                     .ForMember(x => x.CreationDate, opt => opt.MapFrom(src => DateTime.Now))
                     .ForMember(x => x.OrderStateId, opt => opt.MapFrom(src => (int)OrderStateEnum.Created));

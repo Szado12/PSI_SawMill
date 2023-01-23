@@ -19,6 +19,10 @@ public partial class ClientOrderContext : DbContext
 
     public virtual DbSet<Client> Clients { get; set; }
 
+    public virtual DbSet<Delivery> Deliveries { get; set; }
+
+    public virtual DbSet<DeliveryState> DeliveryStates { get; set; }
+
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<EmployeeType> EmployeeTypes { get; set; }
@@ -42,6 +46,7 @@ public partial class ClientOrderContext : DbContext
     public virtual DbSet<WoodType> WoodTypes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=.;Database=PSI_SawMill;Trusted_Connection=True;Trust Server Certificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -73,6 +78,27 @@ public partial class ClientOrderContext : DbContext
                 .HasForeignKey(d => d.AddressId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Clients_Addresses");
+        });
+
+        modelBuilder.Entity<Delivery>(entity =>
+        {
+            entity.Property(e => e.SendDate).HasColumnType("date");
+
+            entity.HasOne(d => d.Deliverer).WithMany(p => p.Deliveries)
+                .HasForeignKey(d => d.DelivererId)
+                .HasConstraintName("FK_Deliveries_Employees1");
+
+            entity.HasOne(d => d.DeliveryState).WithMany(p => p.Deliveries)
+                .HasForeignKey(d => d.DeliveryStateId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Deliveries_DeliveryStates1");
+        });
+
+        modelBuilder.Entity<DeliveryState>(entity =>
+        {
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -121,6 +147,10 @@ public partial class ClientOrderContext : DbContext
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK__Orders__ClientId__440B1D61");
+
+            entity.HasOne(d => d.Delivery).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.DeliveryId)
+                .HasConstraintName("FK__Orders__Delivery__4D94879B");
 
             entity.HasOne(d => d.OrderState).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.OrderStateId)

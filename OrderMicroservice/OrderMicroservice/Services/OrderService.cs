@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using CSharpFunctionalExtensions;
 using OrderMicroservice.Models;
-using OrderMicroservice.ModelViews;
 using OrderMicroservice.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using OrderMicroservice.ModelViews.Orders;
+using OrderMicroservice.ModelViews.Deliveries;
 
 namespace OrderMicroservice.Services
 {
@@ -15,7 +16,17 @@ namespace OrderMicroservice.Services
 
         public Result<OrderView> AddOrder(AddOrderView data)
         {
+            var deliveryToAdd = new Delivery
+            {
+                DeliveryStateId = (int)DeliveryStateEnum.Created
+            };
+
+            ClientOrderContext.Deliveries.Add(deliveryToAdd);
+            if (ClientOrderContext.SaveChanges() == 0)
+                return Result.Failure<OrderView>($"Adding order failed.");
+
             var orderToAdd = Mapper.Map<AddOrderView, Order>(data);
+            orderToAdd.DeliveryId = deliveryToAdd.DeliveryId;
             ClientOrderContext.Add(orderToAdd);
 
             if (ClientOrderContext.SaveChanges() > 0)

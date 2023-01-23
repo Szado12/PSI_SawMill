@@ -1,4 +1,4 @@
-﻿namespace OrderMicroservice.ModelViews
+﻿namespace OrderMicroservice.ModelViews.Orders
 {
     public enum OrderStateEnum
     {
