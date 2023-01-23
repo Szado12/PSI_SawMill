@@ -17,5 +17,5 @@ public partial class Delivery
 
     public virtual DeliveryState DeliveryState { get; set; } = null!;
 
-    public virtual ICollection<Order> Orders { get; } = new List<Order>();
+    public virtual Order? Order { get; set; }
 }

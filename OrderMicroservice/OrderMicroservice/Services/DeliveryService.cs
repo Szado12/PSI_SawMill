@@ -17,7 +17,7 @@ namespace OrderMicroservice.Services
         {
             var result = ClientOrderContext.Deliveries
                 .Include(x => x.DeliveryState)
-                .Include(x => x.Orders)
+                .Include(x => x.Order)
                 .ThenInclude(x => x.Client)
                 .ThenInclude(x => x.Address)
                 .Select(Mapper.Map<Delivery, DeliveryView>)
@@ -34,7 +34,7 @@ namespace OrderMicroservice.Services
             var result = ClientOrderContext.Deliveries
                 .Where(x => x.DeliveryId == id)
                 .Include(x => x.DeliveryState)
-                .Include(x => x.Orders)
+                .Include(x => x.Order)
                 .ThenInclude(x => x.Client)
                 .ThenInclude(x => x.Address)
                 .Select(Mapper.Map<Delivery, DeliveryView>)
@@ -49,9 +49,9 @@ namespace OrderMicroservice.Services
         public Result<DeliveryView> GetDeliveryByOrderId(int id)
         {
             var result = ClientOrderContext.Deliveries
-                .Where(x => x.Orders.First().OrderId == id)
+                .Where(x => x.Order.OrderId == id)
                 .Include(x => x.DeliveryState)
-                .Include(x => x.Orders)
+                .Include(x => x.Order)
                 .ThenInclude(x => x.Client)
                 .ThenInclude(x => x.Address)
                 .Select(Mapper.Map<Delivery, DeliveryView>)
@@ -63,14 +63,14 @@ namespace OrderMicroservice.Services
                 return Result.Failure<DeliveryView>($"Fetching delivery with order id {id} failed.");
         }
 
-        public Result<List<DeliveryState>> GetDeliveryStates()
+        public Result<List<DeliveryStateView>> GetDeliveryStates()
         {
-            var result = ClientOrderContext.DeliveryStates.ToList();
+            var result = ClientOrderContext.DeliveryStates.Select(Mapper.Map<DeliveryState, DeliveryStateView>).ToList();
 
             if (result != null)
                 return Result.Success(result);
             else
-                return Result.Failure<List<DeliveryState>>($"Fetching delivery states failed.");
+                return Result.Failure<List<DeliveryStateView>>($"Fetching delivery states failed.");
         }
 
         public Result<DeliveryView> UpdateDelivery(int id, int? stateId, int? delivererId)

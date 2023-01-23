@@ -21,6 +21,11 @@ namespace OrderMicroservice.Controllers
         public IActionResult GetOrders()
         {
             return _orderService.GetOrders().ToActionResult();
+        }        
+        [HttpGet("states")]
+        public IActionResult GetOrderStates()
+        {
+            return _orderService.GetOrderStates().ToActionResult();
         }
 
         [HttpGet("{id}")]
@@ -35,11 +40,11 @@ namespace OrderMicroservice.Controllers
             return _orderService.GetOrdersByClient(id).ToActionResult();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteOrder([FromRoute] int id)
-        {
-            return _orderService.DeleteOrder(id).ToActionResult();
-        }
+        //[HttpDelete("{id}")]
+        //public IActionResult DeleteOrder([FromRoute] int id)
+        //{
+        //    return _orderService.DeleteOrder(id).ToActionResult();
+        //}
 
         [HttpPut("{id}")]
         public IActionResult UpdateOrder([FromRoute] int id, int orderStateId)

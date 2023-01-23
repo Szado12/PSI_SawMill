@@ -9,7 +9,7 @@ namespace OrderMicroservice.Services.Interfaces
         Result<List<OrderView>> GetOrders();
         Result<List<OrderView>> GetOrdersByClient(int clientId);
         Result<OrderView> GetOrderById(int id);
-        Result<List<OrderState>> GetOrderStates();
+        Result<List<OrderStateView>> GetOrderStates();
         Result<OrderView> AddOrder(AddOrderView data);
         Result<OrderView> UpdateOrder(int id, int orderState);
         Result<bool> DeleteOrder(int id);

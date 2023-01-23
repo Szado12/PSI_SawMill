@@ -9,7 +9,7 @@ namespace OrderMicroservice.Services.Interfaces
         Result<List<DeliveryView>> GetDeliveries(); 
         Result<DeliveryView> GetDeliveryById(int id);
         Result<DeliveryView> GetDeliveryByOrderId(int id);
-        Result<List<DeliveryState>> GetDeliveryStates();
+        Result<List<DeliveryStateView>> GetDeliveryStates();
         Result<DeliveryView> UpdateDelivery(int id, int? stateId, int? delivererId);
 
     }

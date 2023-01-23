@@ -41,15 +41,16 @@ namespace OrderMicroservice.Services
 
                   cfg.CreateMap<Delivery, DeliveryView>()
                     .ForMember(x => x.State, opt => opt.MapFrom(src => src.DeliveryState.Name))
-                    .ForMember(x => x.DeliveryAddress, opt => opt.MapFrom(src => src.Orders.First().Client.Address))
-                    .ForMember(x => x.OrderCreationDate, opt => opt.MapFrom(src => src.Orders.First().CreationDate))
-                    .ForMember(x => x.OrderId, opt => opt.MapFrom(src => src.Orders.First().OrderId))
-                    .ForMember(x => x.Client, opt => opt.MapFrom(src => src.Orders.First().Client))
+                    .ForMember(x => x.DeliveryAddress, opt => opt.MapFrom(src => src.Order.Client.Address))
+                    .ForMember(x => x.OrderCreationDate, opt => opt.MapFrom(src => src.Order.CreationDate))
+                    .ForMember(x => x.OrderId, opt => opt.MapFrom(src => src.Order.OrderId))
+                    .ForMember(x => x.Client, opt => opt.MapFrom(src => src.Order.Client))
                     .ForMember(x => x.Deliverer, opt => opt.MapFrom(src => src.Deliverer));
 
                   cfg.CreateMap<ModifyOrderDetailView, OrderDetail>();
 
                   cfg.CreateMap<ModifyOrderView, Order>();
+
 
                   //cfg.CreateMap<AddOrderView, Delivery>()
                   //  .ForMember(x => x.DeliveryStateId, opt => opt.MapFrom(src => (int)DeliveryStateEnum.Created));
@@ -69,6 +70,10 @@ namespace OrderMicroservice.Services
                       .ForMember(x => x.ClientDetails, opt => opt.MapFrom(src => src.Client))
                       .ForMember(x => x.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails))
                       .ForMember(x => x.OrderPrice, opt => opt.MapFrom(src => src.OrderDetails.Sum(d => Int32.Parse(d.Amount) * d.Product.Price)));
+                 
+                  cfg.CreateMap<DeliveryState, DeliveryStateView>();
+                  cfg.CreateMap<OrderState, OrderStateView>();
+
               }).CreateMapper();
         }
     }

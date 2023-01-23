@@ -141,6 +141,8 @@ public partial class ClientOrderContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
+            entity.HasIndex(e => e.DeliveryId, "UQ__Orders__626D8FCFB26283FA").IsUnique();
+
             entity.Property(e => e.AcceptanceDate).HasColumnType("date");
             entity.Property(e => e.CreationDate).HasColumnType("date");
 
@@ -148,8 +150,8 @@ public partial class ClientOrderContext : DbContext
                 .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK__Orders__ClientId__440B1D61");
 
-            entity.HasOne(d => d.Delivery).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.DeliveryId)
+            entity.HasOne(d => d.Delivery).WithOne(p => p.Order)
+                .HasForeignKey<Order>(d => d.DeliveryId)
                 .HasConstraintName("FK__Orders__Delivery__4D94879B");
 
             entity.HasOne(d => d.OrderState).WithMany(p => p.Orders)

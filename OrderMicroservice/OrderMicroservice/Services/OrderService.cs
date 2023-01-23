@@ -95,11 +95,11 @@ namespace OrderMicroservice.Services
             return Result.Success(result);
         }
 
-        public Result<List<OrderState>> GetOrderStates()
+        public Result<List<OrderStateView>> GetOrderStates()
         {
-            var result = ClientOrderContext.OrderStates.ToList();
+            var result = ClientOrderContext.OrderStates.Select(Mapper.Map<OrderState, OrderStateView>).ToList();
             if (result == null)
-                return Result.Failure<List<OrderState>>($"Fetching order states failed.");
+                return Result.Failure<List<OrderStateView>>($"Fetching order states failed.");
             return Result.Success(result);
         }
 
