@@ -29,6 +29,12 @@ namespace OrderMicroservice.Services
 
                   cfg.CreateMap<AddressView, Address>();
 
+                  cfg.CreateMap<ModifyOrderDetailView, OrderDetail>();
+                  cfg.CreateMap<ModifyOrderView, Order>();
+                  cfg.CreateMap<AddOrderView, Order>()
+                    .ForMember(x => x.CreationDate, opt => opt.MapFrom(src => DateTime.Now))
+                    .ForMember(x => x.OrderStateId, opt => opt.MapFrom(src => (int)OrderStateEnum.Created));
+
                   cfg.CreateMap<OrderDetail, OrderDetailsView>(MemberList.None)
                       .ForMember(x => x.ProductType, opt => opt.MapFrom(src => src.Product.ProductType.Name))
                       .ForMember(x => x.WoodType, opt => opt.MapFrom(src => src.Product.WoodType.Name))

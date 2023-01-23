@@ -1,6 +1,6 @@
 ﻿namespace OrderMicroservice.ModelViews
 {
-    public class ModifyOrderView
+    public class AddOrderView
     {
         public int? OrderId { get; set; }
         public int? ClientId { get; set; }

@@ -36,21 +36,21 @@ namespace OrderMicroservice.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteClient([FromRoute] int id)
+        public IActionResult DeleteOrder([FromRoute] int id)
         {
             return _orderService.DeleteOrder(id).ToActionResult();
         }
 
-        //[HttpPut("{id}")]
-        //public IActionResult EditClient([FromRoute] int id, ClientDetails data)
-        //{
-        //    return _clientService.EditClient(id, data).ToActionResult();
-        //}
+        [HttpPut("{id}")]
+        public IActionResult UpdateOrder([FromRoute] int id, int orderStateId)
+        {
+            return _orderService.UpdateOrder(id, orderStateId).ToActionResult();
+        }
 
-        //[HttpPost]
-        //public IActionResult AddClient(ClientDetails data)
-        //{
-        //    return _clientService.AddClient(data).ToActionResult();
-        //}
+        [HttpPost]
+        public IActionResult AddOrder(AddOrderView data)
+        {
+            return _orderService.AddOrder(data).ToActionResult();
+        }
     }
 }

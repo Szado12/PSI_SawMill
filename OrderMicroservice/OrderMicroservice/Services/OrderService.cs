@@ -13,9 +13,15 @@ namespace OrderMicroservice.Services
         {
         }
 
-        public Result<OrderView> AddOrder(ModifyOrderView data)
+        public Result<OrderView> AddOrder(AddOrderView data)
         {
-            throw new NotImplementedException();
+            var orderToAdd = Mapper.Map<AddOrderView, Order>(data);
+            ClientOrderContext.Add(orderToAdd);
+
+            if (ClientOrderContext.SaveChanges() > 0)
+                return GetOrderById(orderToAdd.OrderId);
+            else
+                return Result.Failure<OrderView>($"Adding order failed.");
         }
 
         public Result<bool> DeleteOrder(int id)
@@ -23,7 +29,7 @@ namespace OrderMicroservice.Services
             var orderToCancel = ClientOrderContext.Orders.Where(x => x.OrderId == id).FirstOrDefault();
             if (orderToCancel == null)
                 return Result.Failure<bool>($"Order with id {id} not found.");
-            orderToCancel.OrderStateId = ClientOrderContext.OrderStates.Where(x => x.Name == "Anulowane").FirstOrDefault().OrderStateId;
+            orderToCancel.OrderStateId = (int)OrderStateEnum.Cancelled;
 
             if (ClientOrderContext.SaveChanges() > 0)
                 return Result.Success(true);
@@ -86,9 +92,20 @@ namespace OrderMicroservice.Services
             return Result.Success(result);
         }
 
-        public Result<OrderView> UpdateOrder(ModifyOrderView data)
+        public Result<OrderView> UpdateOrder(int id, int orderState)
         {
-            throw new NotImplementedException();
+            var orderToEdit = ClientOrderContext.Orders.Where(x => x.OrderId == id).FirstOrDefault();
+            if (orderToEdit == null)
+                return Result.Failure<OrderView>($"Fetching order with id {id} failed.");
+
+            orderToEdit.OrderStateId = orderState;
+            if (orderState == (int)OrderStateEnum.Accepted)
+                orderToEdit.AcceptanceDate = DateTime.Now;
+
+            if (ClientOrderContext.SaveChanges() > 0)
+                return GetOrderById(orderToEdit.OrderId);
+            else
+                return Result.Failure<OrderView>($"Updating order with id {id} failed.");
         }
     }
 }

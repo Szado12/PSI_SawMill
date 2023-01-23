@@ -117,9 +117,6 @@ public partial class ClientOrderContext : DbContext
         {
             entity.Property(e => e.AcceptanceDate).HasColumnType("date");
             entity.Property(e => e.CreationDate).HasColumnType("date");
-            entity.Property(e => e.OrderNumber)
-                .HasMaxLength(50)
-                .IsUnicode(false);
 
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
