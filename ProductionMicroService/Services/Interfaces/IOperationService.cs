@@ -5,10 +5,11 @@ namespace ProductionMicroService.Services.Interfaces
 {
   public interface IOperationService
   {
-    Result<string> AddOperation(AddOperationViewModel addOperationViewModel);
-    Result<string> UpdateOperation(UpdateOperationViewModel operationViewModel);
-    Result<string> DeleteOperation(int operationId);
-    Result<List<AddOperationViewModel>> GetAllOperations();
-    Result<List<AddOperationViewModel>> GetAllOperationsByMachine(int machineId);
+    Result<int> AddOperation(AddOperationViewModel addOperationViewModel);
+    Result<int> UpdateOperation(UpdateOperationViewModel operationViewModel);
+    Result<int> DeleteOperation(int operationId);
+    Result<GetOperationViewModel> GetOperationById(int operationId);
+    Result<List<GetOperationViewModel>> GetAllOperations();
+    Result<List<GetOperationViewModel>> GetAllOperationsByMachine(int machineId);
   }
 }
