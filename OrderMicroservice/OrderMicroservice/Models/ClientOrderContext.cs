@@ -42,14 +42,12 @@ public partial class ClientOrderContext : DbContext
     public virtual DbSet<WoodType> WoodTypes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=.;Database=PSI_SawMill;Trusted_Connection=True;Trust Server Certificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.Property(e => e.AddressId).ValueGeneratedNever();
             entity.Property(e => e.City).HasMaxLength(50);
             entity.Property(e => e.PostalCode).HasMaxLength(10);
             entity.Property(e => e.Street).HasMaxLength(100);
@@ -74,7 +72,7 @@ public partial class ClientOrderContext : DbContext
             entity.HasOne(d => d.Address).WithMany(p => p.Clients)
                 .HasForeignKey(d => d.AddressId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Clients_Addresses1");
+                .HasConstraintName("FK_Clients_Addresses");
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -88,7 +86,7 @@ public partial class ClientOrderContext : DbContext
 
             entity.HasOne(d => d.EmployeeType).WithMany(p => p.Employees)
                 .HasForeignKey(d => d.EmployeeTypeId)
-                .HasConstraintName("FK__Employees__Emplo__398D8EEE");
+                .HasConstraintName("FK__Employees__Emplo__45F365D3");
         });
 
         modelBuilder.Entity<EmployeeType>(entity =>
@@ -125,11 +123,11 @@ public partial class ClientOrderContext : DbContext
 
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
-                .HasConstraintName("FK__Orders__ClientId__4316F928");
+                .HasConstraintName("FK__Orders__ClientId__440B1D61");
 
             entity.HasOne(d => d.OrderState).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.OrderStateId)
-                .HasConstraintName("FK__Orders__OrderSta__440B1D61");
+                .HasConstraintName("FK__Orders__OrderSta__44FF419A");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
@@ -141,12 +139,12 @@ public partial class ClientOrderContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Order__44FF419A");
+                .HasConstraintName("FK__OrderDeta__Order__4222D4EF");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Produ__45F365D3");
+                .HasConstraintName("FK__OrderDeta__Produ__4316F928");
         });
 
         modelBuilder.Entity<OrderState>(entity =>
@@ -176,7 +174,12 @@ public partial class ClientOrderContext : DbContext
 
         modelBuilder.Entity<Warehouse>(entity =>
         {
-            entity.Property(e => e.Adress).HasMaxLength(50);
+            entity.Property(e => e.Name).HasMaxLength(50);
+
+            entity.HasOne(d => d.Address).WithMany(p => p.Warehouses)
+                .HasForeignKey(d => d.AddressId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Warehouses_Addresses");
         });
 
         modelBuilder.Entity<WarehousesToProduct>(entity =>

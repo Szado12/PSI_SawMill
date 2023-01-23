@@ -14,4 +14,6 @@ public partial class Address
     public string PostalCode { get; set; } = null!;
 
     public virtual ICollection<Client> Clients { get; } = new List<Client>();
+
+    public virtual ICollection<Warehouse> Warehouses { get; } = new List<Warehouse>();
 }

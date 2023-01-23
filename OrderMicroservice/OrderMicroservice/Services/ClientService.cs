@@ -17,6 +17,7 @@ namespace OrderMicroservice.Services
         public Result<ClientDetails> AddClient(ClientDetails data)
         {
             var clientToAdd = Mapper.Map<ClientDetails, Client>(data);
+
             ClientOrderContext.Add(clientToAdd);
             if (ClientOrderContext.SaveChanges() > 0)
                 return GetClient(clientToAdd.ClientId);

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using OrderMicroservice.MapperProfiles;
 using OrderMicroservice.Models;
 using OrderMicroservice.ModelViews;
 using OrderMicroservice.Services.Interfaces;
@@ -31,10 +30,10 @@ namespace OrderMicroservice.Services
                   cfg.CreateMap<AddressView, Address>();
 
                   cfg.CreateMap<OrderDetail, OrderDetailsView>(MemberList.None)
-                    .ForMember(x => x.ProductType, opt => opt.MapFrom(src => src.Product.ProductType.Name))
-                    .ForMember(x => x.WoodType, opt => opt.MapFrom(src => src.Product.WoodType.Name))
-                    .ForMember(x => x.Price, opt => opt.MapFrom(src => src.Product.Price))
-                    .ForMember(x => x.FullPrice, opt => opt.MapFrom(src => Int32.Parse(src.Amount) * src.Product.Price));
+                      .ForMember(x => x.ProductType, opt => opt.MapFrom(src => src.Product.ProductType.Name))
+                      .ForMember(x => x.WoodType, opt => opt.MapFrom(src => src.Product.WoodType.Name))
+                      .ForMember(x => x.Price, opt => opt.MapFrom(src => src.Product.Price))
+                      .ForMember(x => x.FullPrice, opt => opt.MapFrom(src => Int32.Parse(src.Amount) * src.Product.Price));
 
                   cfg.CreateMap<Order, OrderView>(MemberList.None)
                       .ForMember(x => x.OrderState, opt => opt.MapFrom(src => src.OrderState.Name))
