@@ -1,16 +1,16 @@
-﻿namespace ProductionMicroService.Services.Interfaces
+﻿using CSharpFunctionalExtensions;
+using ProductionMicroService.ViewModels.ProductionPlan;
+
+namespace ProductionMicroService.Services.Interfaces
 {
   public interface IProductionPlanService
   {
-    //ADd
-    //Modify/Update
-    //Delete -> archive
-    List<object> GetProductionPlan();
-
-    List<object> GetProductionPlanByEmployee();
-    List<object> GetProductionPlanByMachine();
-
-    List<object> CheckAvailability();
-
+    Result<string> AddProductionPlan(AddProductionPlan addProductionPlan);
+    Result<string> ModifyProductionPlan(UpdateProductionPlanViewModel productionPlanToBeUpdated);
+    Result<string> DeleteProductionPlan(int productionPlanId);
+    Result<List<GetProductionPlanViewModel>> GetProductionPlan();
+    Result<List<GetProductionPlanViewModel>> GetProductionPlanByEmployee(int employeeId);
+    Result<List<GetProductionPlanViewModel>> GetProductionPlanByMachine(int machineId);
+    Result<List<bool>> CheckAvailability();
   }
 }

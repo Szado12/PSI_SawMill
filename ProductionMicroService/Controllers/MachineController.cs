@@ -4,7 +4,7 @@ namespace ProdcutionMicroService.Controllers
 {
   [ApiController]
   [Route("[controller]")]
-  public class WeatherForecastController : ControllerBase
+  public class MachineController : ControllerBase
   {
     
   }

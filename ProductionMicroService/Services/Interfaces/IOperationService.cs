@@ -1,11 +1,14 @@
-﻿namespace ProductionMicroService.Services.Interfaces
+﻿using CSharpFunctionalExtensions;
+using ProductionMicroService.ViewModels.Operation;
+
+namespace ProductionMicroService.Services.Interfaces
 {
   public interface IOperationService
   {
-    public string AddOperation();
-    public string UpdateOperation();
-    public string ArchiveOperation();
-    public List<object> GetAllOperations();
-    public List<object> GetAllOperationsByMachine();
+    Result<string> AddOperation(AddOperationViewModel addOperationViewModel);
+    Result<string> UpdateOperation(UpdateOperationViewModel operationViewModel);
+    Result<string> DeleteOperation(int operationId);
+    Result<List<AddOperationViewModel>> GetAllOperations();
+    Result<List<AddOperationViewModel>> GetAllOperationsByMachine(int machineId);
   }
 }
