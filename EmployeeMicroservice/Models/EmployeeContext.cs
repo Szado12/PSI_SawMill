@@ -6,16 +6,12 @@ namespace EmployeeMicroservice.Models;
 
 public partial class EmployeeContext : DbContext
 {
-    private IConfiguration _configuration;
-    public EmployeeContext(IConfiguration configuration)
+    public EmployeeContext()
     {
-      _configuration = configuration;
     }
-
-    public EmployeeContext(DbContextOptions<EmployeeContext> options, IConfiguration configuration)
+    public EmployeeContext(DbContextOptions<EmployeeContext> options)
         : base(options)
     {
-      _configuration = configuration;
     }
 
     public virtual DbSet<Address> Addresses { get; set; }
@@ -48,11 +44,20 @@ public partial class EmployeeContext : DbContext
 
     public virtual DbSet<WoodType> WoodTypes { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(_configuration["ConnectionString"]);
+  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+  {
+    if (!optionsBuilder.IsConfigured)
+    {
+      IConfiguration configuration = new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.json")
+        .Build();
+      var connectionString = configuration["ConnectionString"];
+      optionsBuilder.UseSqlServer(connectionString);
+    }
+  }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
         modelBuilder.Entity<Address>(entity =>
         {
