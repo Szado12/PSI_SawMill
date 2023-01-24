@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
 
-  AuthorizationMicroService:
-    container_name: AuthorizationMicroService
-    image: AuthorizationMicroService
+  authorization-microservice:
+    container_name: authorization-microservice
+    image: authorization-microservice
     build:
       context: ./AuthorizationMicroService
       dockerfile: Dockerfile
@@ -16,11 +16,11 @@ services:
       ASPNETCORE_URLS: http://+:5000
       ASPNETCORE_ENVIRONMENT: Development
     depends_on: 
-      - Database
+      - database
       
-  StoreMicroService:
-    container_name: StoreMicroService
-    image: StoreMicroService
+  store-microservice:
+    container_name: store-microservice
+    image: store-microservice
     build:
       context: ./StoreMicroService
       dockerfile: Dockerfile
@@ -32,12 +32,12 @@ services:
       ASPNETCORE_URLS: http://+:5001
       ASPNETCORE_ENVIRONMENT: Development
     depends_on: 
-      - AuthorizationMicroService
-      - Database
+      - authorization-microservice
+      - database
       
-  ProductionMicroService:
-    container_name: ProductionMicroService
-    image: ProductionMicroService
+  production-microservice:
+    container_name: production-microservice
+    image: production-microservice
     build:
       context: ./ProductionMicroService
       dockerfile: Dockerfile
@@ -49,14 +49,14 @@ services:
       ASPNETCORE_URLS: http://+:5002
       ASPNETCORE_ENVIRONMENT: Development
     depends_on: 
-      - AuthorizationMicroService
-      - StoreMicroService
-      - EmployeeMicroservice
-      - Database
+      - authorization-microservice
+      - store-microservice
+      - employee-microservice
+      - database
       
-  OrderMicroservice:
-    container_name: OrderMicroservice
-    image: OrderMicroservice
+  order-microservice:
+    container_name: order-microservice
+    image: order-microservice
     build:
       context: ./OrderMicroservice
       dockerfile: Dockerfile
@@ -68,14 +68,14 @@ services:
       ASPNETCORE_URLS: http://+:5003
       ASPNETCORE_ENVIRONMENT: Development
     depends_on: 
-      - AuthorizationMicroService
-      - StoreMicroService
-      - EmployeeMicroservice
-      - Database
+      - authorization-microservice
+      - store-microservice
+      - employee-microservice
+      - database
       
-  EmployeeMicroservice:
-    container_name: EmployeeMicroservice
-    image: EmployeeMicroservice
+  employee-microservice:
+    container_name: employee-microservice
+    image: employee-microservice
     build:
       context: ./EmployeeMicroservice
       dockerfile: Dockerfile
@@ -87,14 +87,16 @@ services:
       ASPNETCORE_URLS: http://+:5004
       ASPNETCORE_ENVIRONMENT: Development
     depends_on: 
-      - AuthorizationMicroService
-   Database:
-    container_name: Database
-    image: Database
+      - authorization-microservice
+      - database
+
+  database:
+    container_name: database
+    image: database
     ports:
       - 1433:1433
     expose:
       - "1433"  
     build: 
-      context: ./database
+      context: ./DB
       dockerfile: Dockerfile
