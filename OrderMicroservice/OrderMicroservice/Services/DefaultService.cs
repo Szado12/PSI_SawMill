@@ -32,10 +32,12 @@ namespace OrderMicroservice.Services
                   cfg.CreateMap<AddressView, Address>();
 
                   cfg.CreateMap<Client, DeliveryClientView>()
+                    .ForMember(x => x.ClientId, opt => opt.MapFrom(src => src.ClientId))
                     .ForMember(x => x.FirstName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.FirstName)))
                     .ForMember(x => x.LastName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.LastName)));
 
                   cfg.CreateMap<Employee, DelivererView>()
+                      .ForMember(x => x.DelivererId, opt => opt.MapFrom(src => src.EmployeeId))
                       .ForMember(x => x.FirstName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.FirstName)))
                       .ForMember(x => x.LastName, opt => opt.MapFrom(src => encryptionService.DecryptData(src.LastName)));
 

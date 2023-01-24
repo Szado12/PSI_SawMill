@@ -17,6 +17,7 @@ namespace OrderMicroservice.Services
         {
             var result = ClientOrderContext.Deliveries
                 .Include(x => x.DeliveryState)
+                .Include(x => x.Deliverer)
                 .Include(x => x.Order)
                 .ThenInclude(x => x.Client)
                 .ThenInclude(x => x.Address)
@@ -34,6 +35,7 @@ namespace OrderMicroservice.Services
             var result = ClientOrderContext.Deliveries
                 .Where(x => x.DeliveryId == id)
                 .Include(x => x.DeliveryState)
+                .Include(x => x.Deliverer)
                 .Include(x => x.Order)
                 .ThenInclude(x => x.Client)
                 .ThenInclude(x => x.Address)
@@ -51,6 +53,7 @@ namespace OrderMicroservice.Services
             var result = ClientOrderContext.Deliveries
                 .Where(x => x.Order.OrderId == id)
                 .Include(x => x.DeliveryState)
+                .Include(x => x.Deliverer)
                 .Include(x => x.Order)
                 .ThenInclude(x => x.Client)
                 .ThenInclude(x => x.Address)
