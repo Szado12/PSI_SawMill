@@ -1,0 +1,100 @@
+version: '3.9'
+
+services:
+
+  AuthorizationMicroService:
+    container_name: AuthorizationMicroService
+    image: AuthorizationMicroService
+    build:
+      context: ./AuthorizationMicroService
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    expose:
+      - "5000"
+    environment: 
+      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on: 
+      - Database
+      
+  StoreMicroService:
+    container_name: StoreMicroService
+    image: StoreMicroService
+    build:
+      context: ./StoreMicroService
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    expose:
+      - "5001"
+    environment: 
+      ASPNETCORE_URLS: http://+:5001
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on: 
+      - AuthorizationMicroService
+      - Database
+      
+  ProductionMicroService:
+    container_name: ProductionMicroService
+    image: ProductionMicroService
+    build:
+      context: ./ProductionMicroService
+      dockerfile: Dockerfile
+    ports:
+      - 5002:5002
+    expose:
+      - "5002"
+    environment: 
+      ASPNETCORE_URLS: http://+:5002
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on: 
+      - AuthorizationMicroService
+      - StoreMicroService
+      - EmployeeMicroservice
+      - Database
+      
+  OrderMicroservice:
+    container_name: OrderMicroservice
+    image: OrderMicroservice
+    build:
+      context: ./OrderMicroservice
+      dockerfile: Dockerfile
+    ports:
+      - 5003:5003
+    expose:
+      - "5003"
+    environment: 
+      ASPNETCORE_URLS: http://+:5003
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on: 
+      - AuthorizationMicroService
+      - StoreMicroService
+      - EmployeeMicroservice
+      - Database
+      
+  EmployeeMicroservice:
+    container_name: EmployeeMicroservice
+    image: EmployeeMicroservice
+    build:
+      context: ./EmployeeMicroservice
+      dockerfile: Dockerfile
+    ports:
+      - 5004:5004
+    expose:
+      - "5004"
+    environment: 
+      ASPNETCORE_URLS: http://+:5004
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on: 
+      - AuthorizationMicroService
+   Database:
+    container_name: Database
+    image: Database
+    ports:
+      - 1433:1433
+    expose:
+      - "1433"  
+    build: 
+      context: ./database
+      dockerfile: Dockerfile

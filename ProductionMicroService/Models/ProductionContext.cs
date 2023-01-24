@@ -6,13 +6,16 @@ namespace ProductionMicroService.Models;
 
 public partial class ProductionContext : DbContext
 {
-    public ProductionContext()
+    private IConfiguration _configuration;
+    public ProductionContext(IConfiguration configuration)
     {
+      _configuration = configuration;
     }
 
-    public ProductionContext(DbContextOptions<ProductionContext> options)
+    public ProductionContext(DbContextOptions<ProductionContext> options, IConfiguration configuration)
         : base(options)
     {
+      _configuration = configuration;
     }
 
     public virtual DbSet<Address> Addresses { get; set; }
@@ -41,10 +44,10 @@ public partial class ProductionContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=PSI_SawMill;Trusted_Connection=True;Trust Server Certificate=true");
+        => optionsBuilder.UseSqlServer(_configuration["ConnectionString"]);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+      {
         modelBuilder.Entity<Address>(entity =>
         {
             entity.Property(e => e.City).HasMaxLength(50);

@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmployeeMicroservice.Models;
+namespace OrderMicroservice.Models;
 
-public partial class EmployeeContext : DbContext
+public partial class ClientOrderContext : DbContext
 {
-    public EmployeeContext()
+    private IConfiguration _configuration;
+    public ClientOrderContext(IConfiguration configuration)
     {
+      _configuration = configuration;
     }
 
-    public EmployeeContext(DbContextOptions<EmployeeContext> options)
+    public ClientOrderContext(DbContextOptions<ClientOrderContext> options, IConfiguration configuration)
         : base(options)
     {
+      _configuration = configuration;
     }
 
     public virtual DbSet<Address> Addresses { get; set; }
@@ -27,7 +30,7 @@ public partial class EmployeeContext : DbContext
 
     public virtual DbSet<EmployeeType> EmployeeTypes { get; set; }
 
-    public virtual DbSet<LoginData> LoginData { get; set; }
+    public virtual DbSet<LoginDatum> LoginData { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -47,7 +50,7 @@ public partial class EmployeeContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=PSI_SawMill;Trusted_Connection=True;Trust Server Certificate=true");
+        => optionsBuilder.UseSqlServer(_configuration["ConnectionString"]);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -120,7 +123,7 @@ public partial class EmployeeContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<LoginData>(entity =>
+        modelBuilder.Entity<LoginDatum>(entity =>
         {
             entity.HasKey(e => e.LoginId);
 
