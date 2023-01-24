@@ -9,7 +9,11 @@ public partial class Warehouse
 
     public double Capacity { get; set; }
 
-    public string Adress { get; set; } = null!;
+    public int AddressId { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public virtual Address Address { get; set; } = null!;
 
     public virtual ICollection<WarehousesToProduct> WarehousesToProducts { get; } = new List<WarehousesToProduct>();
 }

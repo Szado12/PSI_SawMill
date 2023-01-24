@@ -18,7 +18,6 @@ namespace EmployeeMicroservice.Controllers
         }
 
         [HttpGet]
-        [Route("all")]
         public IActionResult GetEmployees()
         {
             return _employeeService.GetEmployees().ToActionResult();
@@ -26,9 +25,23 @@ namespace EmployeeMicroservice.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetEmployees([FromRoute]int id)
+        public IActionResult GetEmployee([FromRoute]int id)
         {
             return _employeeService.GetEmployee(id).ToActionResult();
+        }
+
+        [HttpGet]
+        [Route("type-{id}")]
+        public IActionResult GetEmployeeByEmployeeType([FromRoute] int id)
+        {
+            return _employeeService.GetActiveEmployeesByEmployeeType(id).ToActionResult();
+        }
+
+        [HttpGet]
+        [Route("operators")]
+        public IActionResult GetOperators()
+        {
+            return _employeeService.GetActiveEmployeesByEmployeeType((int)EmployeeTypesEnum.MachineOperator).ToActionResult();
         }
 
         [HttpPost]
