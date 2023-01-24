@@ -9,5 +9,7 @@ namespace StoreMicroService.Services.Interfaces
     Result<string> RemoveProduct(int productId);
     Result<string> UpdateProduct(UpdateProductViewModel product);
     Result<List<GetProductViewModel>> GetAllProducts();
+    Result<string> ReserveProductInStore(List<ProductIdAndAmount> reserveItemList);
+    Result<string> AddToStore(List<ProductIdAndAmount> addItemList);
   }
 }

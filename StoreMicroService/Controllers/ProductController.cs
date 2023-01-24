@@ -42,6 +42,21 @@ namespace StoreMicroService.Controllers
       return _productService.UpdateProduct(product).ToActionResult();
     }
 
+
+    [HttpPost]
+    [Route("RemoveFromStore")]
+    public IActionResult RemoveFromStore(List<ProductIdAndAmount> reserveItemList)
+    {
+      return _productService.ReserveProductInStore(reserveItemList).ToActionResult();
+    }
+
+    [HttpPost]
+    [Route("AddToStore")]
+    public IActionResult AddToStore(List<ProductIdAndAmount> reserveItemList)
+    {
+      return _productService.AddToStore(reserveItemList).ToActionResult();
+    }
+
     [HttpGet]
     [Route("WoodType")]
     public IActionResult GetWoodTypes()
@@ -83,6 +98,5 @@ namespace StoreMicroService.Controllers
     {
       return _productTypeService.UpdateProductType(productType).ToActionResult();
     }
-
   }
 }
