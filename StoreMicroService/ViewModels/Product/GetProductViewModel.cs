@@ -8,5 +8,6 @@
         public string ProductTypeName { get; set; }
         public int WoodTypeId { get; set; }
         public string WoodTypeName { get; set; }
+        public double AvailableAmount { get; set; }
     }
 }

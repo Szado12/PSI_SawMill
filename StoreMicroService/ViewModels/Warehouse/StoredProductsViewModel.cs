@@ -6,5 +6,6 @@
     public string? ProductTypeName { get; set; }
     public string? WoodTypeName { get; set; }
     public double Amount { get; set; }
+    public double Price { get; set; }
   }
 }

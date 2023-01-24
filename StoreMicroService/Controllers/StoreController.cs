@@ -40,6 +40,5 @@ namespace StoreMicroService.Controllers
     {
       return _warehouseService.UpdateWarehouse(warehouse).ToActionResult();
     }
-
   }
 }

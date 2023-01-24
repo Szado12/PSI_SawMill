@@ -1,14 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using StoreMicroService.Models;
+using StoreMicroService.ViewModels.Product;
 using StoreMicroService.ViewModels.ProductType;
 
 namespace StoreMicroService.Services.Interfaces
 {
   public interface IProductTypeService
   {
-    Result<string> AddProductType(string productName);
-    Result<string> RemoveProductType(int productTypeId);
-    Result<string> UpdateProductType(ProductTypeModel productType);
+    Result<int> AddProductType(string productName);
+    Result<int> RemoveProductType(int productTypeId);
+    Result<int> UpdateProductType(ProductTypeModel productType);
     Result<List<ProductTypeModel>> GetProductTypes();
   }
 }
