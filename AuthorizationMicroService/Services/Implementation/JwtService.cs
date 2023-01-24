@@ -13,10 +13,12 @@ namespace AuthorizationMicroService.Services.Implementation
   public class JwtService : BaseService, IJwtService
   {
     private readonly IConfiguration _configuration;
+    private IEncryptionService _encryptionService;
 
-    public JwtService(IConfiguration configuration)
+    public JwtService(IConfiguration configuration, IEncryptionService encryptionService)
     {
       _configuration = configuration;
+      _encryptionService = encryptionService;
     }
 
     public Result<Tuple<string, string>> RefreshExpiredToken(string expiredToken, string refreshToken)
@@ -40,9 +42,9 @@ namespace AuthorizationMicroService.Services.Implementation
       UserData userData = new UserData
       {
         LoginId = loginData.LoginData.First().LoginId,
-        Name = loginData.FirstName,
-        Surname = loginData.LastName,
-        RoleId = 1,
+        Name = _encryptionService.DecryptData(loginData.FirstName),
+        Surname = _encryptionService.DecryptData(loginData.LastName),
+        RoleId = loginData.EmployeeTypeId,
         UserId = loginData.EmployeeId
       };
       return Result.Success(new Tuple<string, string>(GenerateToken(userData), refreshToken));
@@ -81,7 +83,7 @@ namespace AuthorizationMicroService.Services.Implementation
     {
       LoginData loginData = AuthorizationContext.LoginData.First((LoginData x) => x.LoginId == loginDataId);
       loginData.RefreshToken = token;
-      loginData.RefreshTokenExpireDate = DateTime.Now.AddDays(double.Parse(_configuration["JWT:RefreshTokenValidityInDays"]));
+      loginData.RefreshTokenExpireDate = DateTime.Now.AddHours(double.Parse(_configuration["JWT:RefreshTokenValidityInHours"]));
       AuthorizationContext.SaveChanges();
     }
 
