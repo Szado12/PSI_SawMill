@@ -19,7 +19,7 @@ namespace ProductionMicroService.Controllers
     [HttpGet]
     public IActionResult GetProductionPlans()
     {
-      return _productionPlanService.GetProductionPlan().ToActionResult();
+      return _productionPlanService.GetProductionPlans().ToActionResult();
     }
 
     [HttpGet]

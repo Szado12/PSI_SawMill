@@ -154,6 +154,8 @@ namespace ProductionMicroService.Services
       if ((ProductionPlanStatus) productionPlan.Status == ProductionPlanStatus.Completed)
         return Result.Failure<int>($"Production plan with id is completed");
       productionPlan.Status++;
+      if ((ProductionPlanStatus) productionPlan.Status == ProductionPlanStatus.Completed)
+        //call woodStore To Add outputProduct;
       ProductionContext.SaveChanges();
       return Result.Success(productionPlanId);
     }
