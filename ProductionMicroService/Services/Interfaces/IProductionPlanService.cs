@@ -5,8 +5,7 @@ namespace ProductionMicroService.Services.Interfaces
 {
   public interface IProductionPlanService
   {
-    Result<int> AddProductionPlan(AddProductionPlan addProductionPlan);
-    Result<int> UpdateProductionPlan(UpdateProductionPlanViewModel productionPlanToBeUpdated);
+    Task<Result<int>> AddProductionPlan(AddProductionPlan addProductionPlan);
     Result<int> DeleteProductionPlan(int productionPlanId);
     Result<List<GetProductionPlanViewModel>> GetProductionPlans();
     Result<GetProductionPlanViewModel> GetProductionPlanById(int productionPlanId);
@@ -14,7 +13,7 @@ namespace ProductionMicroService.Services.Interfaces
     Result<List<GetProductionPlanViewModel>> GetProductionPlanByMachine(int machineId);
     Result<List<GetProductionPlanViewModel>> GetProductionPlanByOperation(int operationId);
     Result<List<GetProductionPlanViewModel>> GetProductionPlanByState(int stateId);
-    Result<int> UpdateState(int productionPlanId);
+    Task<Result<int>> UpdateState(int productionPlanId);
     Result<int> UpdateStateError(int productionPlanId);
     Result<List<bool>> CheckAvailability();
   }

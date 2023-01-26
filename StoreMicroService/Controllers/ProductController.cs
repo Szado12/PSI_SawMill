@@ -30,6 +30,13 @@ namespace StoreMicroService.Controllers
       return _productService.GetAllProducts().ToActionResult();
     }
 
+    [HttpGet]
+    [Route("{productId}")]
+    public IActionResult GetProducts([FromRoute] int productId)
+    {
+      return _productService.GetProductById(productId).ToActionResult();
+    }
+
     [HttpPost]
     public IActionResult AddProduct(AddProductViewModel product)
     {

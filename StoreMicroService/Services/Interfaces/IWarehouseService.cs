@@ -5,8 +5,8 @@ namespace StoreMicroService.Services.Interfaces
 {
   public interface IWarehouseService
   {
-    Result<string> AddWarehouse(AddWarehouseViewModel addWarehouse);
-    Result<string> UpdateWarehouse(UpdateWarehouseViewModel addWarehouse);
+    Result<int> AddWarehouse(AddWarehouseViewModel addWarehouse);
+    Result<int> UpdateWarehouse(UpdateWarehouseViewModel addWarehouse);
 
     Result<List<WarehouseViewModel>> GetWarehouses();
     Result<WarehouseDetailsViewModel> GetWarehouseDetails(int warehouseId);

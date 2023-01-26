@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Azure;
+using ProductionMicroService.Models;
 using ProductionMicroService.ViewModels.Operation;
 
 namespace ProductionMicroService.Profiles

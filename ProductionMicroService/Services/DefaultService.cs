@@ -14,7 +14,9 @@ namespace ProductionMicroService.Services
       Mapper = new MapperConfiguration(
         cfg => cfg.AddProfiles(new List<Profile>
         {
-          new OperationProfile()
+          new OperationProfile(),
+          new MachineProfile(),
+          new ProductionPlanProfile()
         })).CreateMapper();
     }
   }

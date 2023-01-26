@@ -9,7 +9,7 @@ namespace StoreMicroService.Services
 {
   public class WarehouseService : DefaultService,IWarehouseService
   {
-    public Result<string> AddWarehouse(AddWarehouseViewModel addWarehouse)
+    public Result<int> AddWarehouse(AddWarehouseViewModel addWarehouse)
     {
       try
       {
@@ -22,15 +22,15 @@ namespace StoreMicroService.Services
 
         StoreContext.Warehouses.Add(newWarehouse);
         StoreContext.SaveChanges();
-        return Result.Success("Warehouse added");
+        return Result.Success(newWarehouse.WarehouseId);
       }
       catch (Exception e)
       {
-        return Result.Failure<string>(e.Message);
+        return Result.Failure<int>(e.Message);
       }
     }
 
-    public Result<string> UpdateWarehouse(UpdateWarehouseViewModel updateWarehouse)
+    public Result<int> UpdateWarehouse(UpdateWarehouseViewModel updateWarehouse)
     {
       try
       {
@@ -77,12 +77,12 @@ namespace StoreMicroService.Services
         }
 
         StoreContext.SaveChanges();
-        return Result.Success($"Warehouse with id:{updateWarehouse.WarehouseId} updated");
+        return Result.Success(updateWarehouse.WarehouseId);
 
       }
       catch (Exception e)
       {
-        return Result.Failure<string>(e.Message);
+        return Result.Failure<int>(e.Message);
       }
     }
 
