@@ -7,7 +7,7 @@ public partial class Operation
 {
     public int OperationId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     public string? Description { get; set; }
 

@@ -7,7 +7,7 @@ using ProductionMicroService.ViewModels.Operation;
 namespace ProductionMicroService.Controllers
 {
   [ApiController]
-  [Route("[controller]")]
+  [Route("api/[controller]")]
   public class OperationController
   {
     private IOperationService _operationService;
@@ -24,12 +24,13 @@ namespace ProductionMicroService.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetOperationsByMachine(int machineId)
+    [Route("machine/{machineId}")]
+    public IActionResult GetOperationsByMachine([FromRoute] int machineId)
     {
       return _operationService.GetAllOperationsByMachine(machineId).ToActionResult();
     }
 
-    [HttpGet]
+    [HttpPut]
     public IActionResult UpdateOperation(UpdateOperationViewModel updateOperation)
     {
       return _operationService.UpdateOperation(updateOperation).ToActionResult();
@@ -41,7 +42,7 @@ namespace ProductionMicroService.Controllers
       return _operationService.AddOperation(addOperation).ToActionResult();
     }
 
-    [HttpPost]
+    [HttpDelete]
     public IActionResult DeleteOperation (int operationId)
     {
       return _operationService.DeleteOperation(operationId).ToActionResult();

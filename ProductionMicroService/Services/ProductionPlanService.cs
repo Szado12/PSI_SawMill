@@ -1,8 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
+using EmployeeMicroservice.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using ProductionMicroService.Models;
 using ProductionMicroService.Services.Interfaces;
+using ProductionMicroService.ViewModels;
 using ProductionMicroService.ViewModels.ProductionPlan;
+using StoreMicroService.ViewModels.Product;
 
 namespace ProductionMicroService.Services
 {
@@ -16,16 +19,33 @@ namespace ProductionMicroService.Services
       _operationService = operationService;
     }
 
-    public Result<int> AddProductionPlan(AddProductionPlan addProductionPlan)
+    public async Task<Result<int>> AddProductionPlan(AddProductionPlan addProductionPlan)
     {
-      //check if Product exist
-      //check if product amount is sufficient
+      Result<List<GetProductViewModel>> products = await HttpService.GetProducts();
+
+      if (products.IsFailure)
+      {
+        return Result.Failure<int>(products.Error);
+      }
+
+      if (products.Value.Count(x => x.ProductId == addProductionPlan.ProductId) == 0)
+        return Result.Failure<int>($"Product with id:{addProductionPlan.ProductId} doesn't exist");
+
+      GetProductViewModel product = products.Value.First(x => x.ProductId == addProductionPlan.ProductId);
+
+      if (product.AvailableAmount < addProductionPlan.MaterialAmount)
+      {
+        return Result.Failure<int>($"Insufficient product amount in stores");
+      }
 
       var operation = _operationService.GetOperationById(addProductionPlan.OperationId);
       if (operation.IsFailure)
       {
         return Result.Failure<int>(operation.Error);
       }
+      
+      if (products.Value.Count(x => x.WoodTypeId == product.WoodTypeId && x.ProductTypeId == operation.Value.OutputProductTypeId) == 0)
+        return Result.Failure<int>($"Output product doesn't exist");
       
       var machine = _machineService.GetMachineById(addProductionPlan.MachineId);
       if (machine.IsFailure)
@@ -38,22 +58,29 @@ namespace ProductionMicroService.Services
           $"Machine with id:{addProductionPlan.MachineId} is not compatible with operation {addProductionPlan.OperationId}");
 
 
-      //check if employee is machineWorker
+      Result<List<EmployeeView>> machineWorkers = await HttpService.GetMachineWorkers();
 
-      //reserve Product amount
+      if (machineWorkers.IsFailure)
+        return Result.Failure<int>(machineWorkers.Error);
+      
+      if(machineWorkers.Value.Count(x=>x.EmployeeId == addProductionPlan.EmployeeId) == 0)
+        return Result.Failure<int>($"Employe with id:{addProductionPlan.EmployeeId} is not a machine operator");
+
+      List<ProductIdAndAmount> reservedWoodList = new List<ProductIdAndAmount>
+      {
+        new() {Amount = addProductionPlan.MaterialAmount, ProductId = addProductionPlan.ProductId}
+      };
+      Result<bool> reservedWoodResult = await HttpService.ReserveWood(reservedWoodList);
+
+      if (reservedWoodResult.IsFailure)
+        return Result.Failure<int>(reservedWoodResult.Error);
 
       var productionPlanToBeAdded = Mapper.Map<AddProductionPlan, ProductionDetail>(addProductionPlan);
       productionPlanToBeAdded.Status = (int) ProductionPlanStatus.Created;
       ProductionContext.ProductionDetails.Add(productionPlanToBeAdded);
-      ProductionContext.SaveChanges();
+      await ProductionContext.SaveChangesAsync();
       return Result.Success(productionPlanToBeAdded.ProductionDetailId);
     }
-
-    public Result<int> UpdateProductionPlan(UpdateProductionPlanViewModel productionPlanToBeUpdated)
-    {
-      throw new NotImplementedException();
-    }
-
     public Result<int> DeleteProductionPlan(int productionPlanId)
     {
       var productionPlanToBeArchived =
@@ -145,7 +172,7 @@ namespace ProductionMicroService.Services
       }
     }
 
-    public Result<int> UpdateState(int productionPlanId)
+    public async Task<Result<int>> UpdateState(int productionPlanId)
     {
       var productionPlan =
         ProductionContext.ProductionDetails.FirstOrDefault(x => x.OperationId == productionPlanId);
@@ -155,8 +182,38 @@ namespace ProductionMicroService.Services
         return Result.Failure<int>($"Production plan with id is completed");
       productionPlan.Status++;
       if ((ProductionPlanStatus) productionPlan.Status == ProductionPlanStatus.Completed)
-        //call woodStore To Add outputProduct;
-      ProductionContext.SaveChanges();
+      {
+        Result<List<GetProductViewModel>> products = await HttpService.GetProducts();
+        if (products.IsFailure)
+        {
+          return Result.Failure<int>(products.Error);
+        }
+        
+        var operation = _operationService.GetOperationById(productionPlan.OperationId);
+        if (operation.IsFailure)
+        {
+          return Result.Failure<int>(operation.Error);
+        }
+
+        var product = products.Value.First(x => x.ProductId == productionPlan.ProductId);
+
+        if (products.Value.Count(x => x.WoodTypeId == product.WoodTypeId && x.ProductTypeId == operation.Value.OutputProductTypeId) == 0)
+          return Result.Failure<int>($"Output product doesn't exist");
+        
+        var output = products.Value.First(x =>
+          x.WoodTypeId == product.WoodTypeId && x.ProductTypeId == operation.Value.OutputProductTypeId);
+
+        List<ProductIdAndAmount> reservedWoodList = new List<ProductIdAndAmount>
+        {
+          new() {Amount = productionPlan.MaterialAmount, ProductId = output.ProductId}
+        };
+        Result<bool> reservedWoodResult = await HttpService.AddWood(reservedWoodList);
+
+        if (reservedWoodResult.IsFailure)
+          return Result.Failure<int>(reservedWoodResult.Error);
+      } 
+
+      await ProductionContext.SaveChangesAsync();
       return Result.Success(productionPlanId);
     }
 

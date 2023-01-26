@@ -6,7 +6,7 @@ using ProductionMicroService.ViewModels.ProductionPlan;
 namespace ProductionMicroService.Controllers
 {
   [ApiController]
-  [Route("[controller]")]
+  [Route("api/[controller]")]
   public class ProductionPlanController
   {
     private readonly IProductionPlanService _productionPlanService;
@@ -23,29 +23,25 @@ namespace ProductionMicroService.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetProductionPlansByEmployee(int employeeId)
+    [Route("employe/{employeeId}")]
+    public IActionResult GetProductionPlansByEmployee([FromRoute] int employeeId)
     {
       return _productionPlanService.GetProductionPlanByEmployee(employeeId).ToActionResult();
     }
 
     [HttpGet]
+    [Route("machine/{employeeId}")]
     public IActionResult GetProductionPlansByMachine(int machineId)
     {
       return _productionPlanService.GetProductionPlanByMachine(machineId).ToActionResult();
     }
 
     [HttpPost]
-    public IActionResult AddProductionPlans(AddProductionPlan productionPlan)
+    public async Task<IActionResult> AddProductionPlans(AddProductionPlan productionPlan)
     {
-      return _productionPlanService.AddProductionPlan(productionPlan).ToActionResult();
+      return (await _productionPlanService.AddProductionPlan(productionPlan)).ToActionResult();
     }
-
-    [HttpPut]
-    public IActionResult UpdateProductionPlans(UpdateProductionPlanViewModel updateProductionPlan)
-    {
-      return _productionPlanService.UpdateProductionPlan(updateProductionPlan).ToActionResult();
-    }
-
+    
     [HttpDelete]
     public IActionResult ArchiveProductionPlans(int productionPlanId)
     {

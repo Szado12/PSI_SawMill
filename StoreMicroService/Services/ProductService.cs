@@ -9,38 +9,39 @@ namespace StoreMicroService.Services
 {
   public class ProductService : DefaultService, IProductService
   {
-    public Result<string> AddProduct(AddProductViewModel product)
+    public Result<int> AddProduct(AddProductViewModel product)
     {
       var exist = StoreContext.Products.FirstOrDefault(x => x.WoodTypeId == product.WoodTypeId && x.ProductTypeId == product.ProductTypeId && Math.Abs(x.Price - product.Price) < 0.001);
       if (exist != null)
-        return Result.Failure<string>($"Product with this specification already exist id:{exist.ProductId}");
+        return Result.Failure<int>($"Product with this specification already exist id:{exist.ProductId}");
 
-      StoreContext.Products.Add(new Product
+      var newProduct = new Product
       {
         WoodTypeId = product.WoodTypeId,
         ProductTypeId = product.ProductTypeId,
         Price = product.Price
-      });
+      };
+      StoreContext.Products.Add(newProduct);
       StoreContext.SaveChanges();
-      return Result.Success($"Product added");
+      return Result.Success(newProduct.ProductId);
     }
 
-    public Result<string> RemoveProduct(int productId)
+    public Result<int> RemoveProduct(int productId)
     {
       throw new NotImplementedException();
     }
 
-    public Result<string> UpdateProduct(UpdateProductViewModel product)
+    public Result<int> UpdateProduct(UpdateProductViewModel product)
     {
       var productToUpdate = StoreContext.Products.FirstOrDefault(x => x.ProductId == product.ProductId);
       if (productToUpdate == null)
-        return Result.Failure<string>($"Product with id:{product.ProductId} doesn't exist");
+        return Result.Failure<int>($"Product with id:{product.ProductId} doesn't exist");
 
       productToUpdate.ProductTypeId = product.ProductTypeId;
       productToUpdate.WoodTypeId = product.WoodTypeId;
       productToUpdate.Price= product.Price;
       StoreContext.SaveChanges();
-      return Result.Success($"Product id:{productToUpdate.ProductId} updated");
+      return Result.Success(product.ProductId);
     }
 
     public Result<List<GetProductViewModel>> GetAllProducts()
@@ -56,6 +57,22 @@ namespace StoreMicroService.Services
       catch (Exception e)
       {
         return Result.Failure<List<GetProductViewModel>>(e.Message);
+      }
+    }
+
+    public Result<GetProductViewModel> GetProductById(int productId)
+    {
+      try
+      {
+        return Result.Success(Mapper.Map<Product,GetProductViewModel>(StoreContext.Products
+          .Include(x => x.WoodType)
+          .Include(x => x.ProductType)
+          .Include(x => x.WarehousesToProducts)
+          .First(x=>x.ProductId == productId)));
+      }
+      catch (Exception e)
+      {
+        return Result.Failure<GetProductViewModel>(e.Message);
       }
     }
 
@@ -136,23 +153,40 @@ namespace StoreMicroService.Services
           if (availableSpace <= product.Amount)
           {
             product.Amount -= availableSpace;
-            warehouse.Item1.WarehousesToProducts.Add(new WarehousesToProduct
+            if (warehouse.Item1.WarehousesToProducts.Count(x => x.ProductId == product.ProductId) > 0 )
             {
-              Amount = availableSpace,
-              ProductId = product.ProductId,
-              WarehouseId = warehouse.Item1.WarehouseId
-            });
+              warehouse.Item1.WarehousesToProducts.First(x => x.ProductId == product.ProductId).Amount +=
+                availableSpace;
+            }
+            else
+            {
+              warehouse.Item1.WarehousesToProducts.Add(new WarehousesToProduct
+              {
+                Amount = availableSpace,
+                ProductId = product.ProductId,
+                WarehouseId = warehouse.Item1.WarehouseId
+              });
+            }
+
             availableSpace = 0;
             break;
           }
 
           availableSpace -= product.Amount;
-          warehouse.Item1.WarehousesToProducts.Add(new WarehousesToProduct
+          if (warehouse.Item1.WarehousesToProducts.Count(x => x.ProductId == product.ProductId) > 0)
           {
-            Amount = product.Amount, 
-            ProductId = product.ProductId,
-            WarehouseId = warehouse.Item1.WarehouseId
-          });
+            warehouse.Item1.WarehousesToProducts.First(x => x.ProductId == product.ProductId).Amount +=
+              product.Amount;
+          }
+          else
+          {
+            warehouse.Item1.WarehousesToProducts.Add(new WarehousesToProduct
+            {
+              Amount = product.Amount,
+              ProductId = product.ProductId,
+              WarehouseId = warehouse.Item1.WarehouseId
+            });
+          }
           product.Amount = 0;
           
         }

@@ -6,9 +6,9 @@ namespace StoreMicroService.Services.Interfaces
 {
   public interface IWoodTypeService
   {
-    Result<string> AddWoodType(string name);
-    Result<string> RemoveWoodType(int woodTypeId);
-    Result<string> UpdateWoodType(WoodTypeModel woodType);
+    Result<int> AddWoodType(string name);
+    Result<int> RemoveWoodType(int woodTypeId);
+    Result<int> UpdateWoodType(WoodTypeModel woodType);
     Result<List<WoodTypeModel>> GetWoodTypes();
   }
 }

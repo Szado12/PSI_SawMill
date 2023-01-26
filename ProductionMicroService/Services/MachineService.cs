@@ -7,6 +7,7 @@ using ProductionMicroService.ViewModels.Machine;
 using ProductionMicroService.ViewModels.Operation;
 using System.Reflection.PortableExecutable;
 using Machine = ProductionMicroService.Models.Machine;
+using Operation = ProductionMicroService.Models.Operation;
 
 namespace ProductionMicroService.Services
 {
@@ -114,7 +115,10 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<Machine, GetMachineViewModel>(
-            ProductionContext.Machines.First(x => x.MachineId == machineId && x.IsArchived == false)));
+            ProductionContext.Machines
+              .Include(x => x.OperationsToMachines)
+              .ThenInclude(x => x.Operation)
+              .First(x => x.MachineId == machineId && x.IsArchived == false)));
       }
       catch (Exception e)
       {
@@ -126,12 +130,12 @@ namespace ProductionMicroService.Services
     {
       try
       {
-        return Mapper.Map<List<Machine>, List<GetMachineViewModel>>(
+        return Result.Success(Mapper.Map<List<Machine>, List<GetMachineViewModel>>(
           ProductionContext.Machines
+            .Where(x => x.IsArchived == false)
             .Include(x => x.OperationsToMachines)
             .ThenInclude(x => x.Operation)
-            .Where(x => x.IsArchived == false)
-            .ToList());
+            .ToList()));
       }
       catch (Exception e)
       {
