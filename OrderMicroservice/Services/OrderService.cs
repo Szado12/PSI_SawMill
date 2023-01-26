@@ -5,17 +5,27 @@ using OrderMicroservice.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using OrderMicroservice.ModelViews.Orders;
 using OrderMicroservice.ModelViews.Deliveries;
+using Newtonsoft.Json;
+using System.IO;
+using OrderMicroservice.ModelViews;
 
 namespace OrderMicroservice.Services
 {
     public class OrderService : DefaultService, IOrderService
     {
+        static readonly HttpClient client = new HttpClient();
         public OrderService(ClientOrderContext clientOrderContext) : base(clientOrderContext)
         {
         }
 
         public Result<OrderView> AddOrder(AddOrderView data)
         {
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://localhost:7048/api/Product/RemoveFromStore"));
+            request.Content = JsonContent.Create(data.OrderDetails.Select(Mapper.Map<ModifyOrderDetailView, ProductIdAndAmount>));
+            var response = client.Send(request);
+            if (!response.IsSuccessStatusCode)
+                return Result.Failure<OrderView>($"Not enough products.");
+
             var deliveryToAdd = new Delivery
             {
                 DeliveryStateId = (int)DeliveryStateEnum.Created
@@ -28,11 +38,10 @@ namespace OrderMicroservice.Services
             var orderToAdd = Mapper.Map<AddOrderView, Order>(data);
             orderToAdd.DeliveryId = deliveryToAdd.DeliveryId;
             ClientOrderContext.Add(orderToAdd);
-
-            if (ClientOrderContext.SaveChanges() > 0)
-                return GetOrderById(orderToAdd.OrderId);
-            else
+            if(ClientOrderContext.SaveChanges() == 0)
                 return Result.Failure<OrderView>($"Adding order failed.");
+            else
+                return GetOrderById(orderToAdd.OrderId);
         }
 
         public Result<bool> DeleteOrder(int id)
