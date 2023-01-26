@@ -20,7 +20,7 @@ namespace OrderMicroservice.Services
 
         public Result<OrderView> AddOrder(AddOrderView data)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://localhost:7048/api/Product/RemoveFromStore"));
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri("http://store-microservice:5001/api/Product/RemoveFromStore"));
             request.Content = JsonContent.Create(data.OrderDetails.Select(Mapper.Map<ModifyOrderDetailView, ProductIdAndAmount>));
             var response = client.Send(request);
             if (!response.IsSuccessStatusCode)
