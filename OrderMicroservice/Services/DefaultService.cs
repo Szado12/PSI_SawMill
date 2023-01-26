@@ -53,7 +53,7 @@ namespace OrderMicroservice.Services
 
                   cfg.CreateMap<ModifyOrderView, Order>();
 
-
+                  cfg.CreateMap<ModifyOrderDetailView, ProductIdAndAmount>();
                   //cfg.CreateMap<AddOrderView, Delivery>()
                   //  .ForMember(x => x.DeliveryStateId, opt => opt.MapFrom(src => (int)DeliveryStateEnum.Created));
 
