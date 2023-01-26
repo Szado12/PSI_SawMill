@@ -7,17 +7,15 @@ public partial class Employee
 {
     public int EmployeeId { get; set; }
 
-    public string FirstName { get; set; } = null!;
+    public bool IsBlocked { get; set; }
 
-    public string LastName { get; set; } = null!;
+    public int EmployeeTypeId { get; set; }
 
-    public DateTime WorkStartDate { get; set; }
+    public byte[] LastName { get; set; } = null!;
 
-    public DateTime? WorkEndDate { get; set; }
+    public byte[] FirstName { get; set; } = null!;
 
-    public bool IsArchived { get; set; }
-
-    public bool IsFaired { get; set; }
+    public virtual EmployeeType? EmployeeType { get; set; }
 
     public virtual ICollection<LoginData> LoginData { get; } = new List<LoginData>();
 }

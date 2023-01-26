@@ -18,15 +18,7 @@ namespace AuthorizationMicroService.Controllers
       _authorizationService = authorizationService;
       _jwtService = jwtService;
     }
-
-    [HttpPost]
-    [Route("register")]
-    public IActionResult Register()
-    {
-      _authorizationService.AddSyf();
-      return Ok();
-    }
-
+    
     [HttpPost]
     [Route("refreshToken")]
     public IActionResult RefreshExpiredToken(string expiredToken, string refreshToken)

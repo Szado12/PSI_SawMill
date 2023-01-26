@@ -2,8 +2,7 @@
 {
   public interface IEncryptionService
   {
-    byte[] HashString(string stringToBeHashed);
-    string EncryptData(string dataToEncrypt);
-    string DecryptData(string dataToEncrypt);
+    byte[] HashData(string stringToBeHashed);
+    string DecryptData(byte[] dataToDecrypt);
   }
 }
