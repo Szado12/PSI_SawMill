@@ -32,7 +32,9 @@ public class AuthorizationService : BaseService, IAuthorizationService
       LoginId = loginData.LoginId,
       UserId = loginData.Employee.EmployeeId,
       Name = _encryptionService.DecryptData(loginData.Employee.FirstName),
-      Surname = _encryptionService.DecryptData(loginData.Employee.LastName)
+      Surname = _encryptionService.DecryptData(loginData.Employee.LastName),
+      RoleId = loginData.Employee.EmployeeTypeId
+
     };
     return Result.Success(userData);
   }
