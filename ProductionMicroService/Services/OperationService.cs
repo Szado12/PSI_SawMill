@@ -66,7 +66,7 @@ namespace ProductionMicroService.Services
           .FirstOrDefault(o => o.OperationId == operationId);
         if (deleteOperation == null)
           return Result.Failure<int>($"Operation with id:{deleteOperation.OperationId} doesn't exist");
-        if (deleteOperation.ProductionDetails.Count(x => x.IsArchived == false) > 0)
+        if (deleteOperation.ProductionDetails.Count(x => !x.IsArchived) > 0)
         {
           return Result.Failure<int>($"Operation with id:{deleteOperation.OperationId} has active production plans");
         }
@@ -87,7 +87,7 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<Operation, GetOperationViewModel>(
-            ProductionContext.Operations.First(x => x.OperationId == operationId && x.IsArchived == false)));
+            ProductionContext.Operations.First(x => x.OperationId == operationId && !x.IsArchived)));
       }
       catch (Exception e)
       {
@@ -99,7 +99,7 @@ namespace ProductionMicroService.Services
     {
       try
       {
-        return Result.Success(Mapper.Map<List<Operation>, List<GetOperationViewModel>>(ProductionContext.Operations.Where(x => x.IsArchived == false).ToList()));
+        return Result.Success(Mapper.Map<List<Operation>, List<GetOperationViewModel>>(ProductionContext.Operations.Where(x => !x.IsArchived).ToList()));
       }
       catch (Exception e)
       {
@@ -113,9 +113,10 @@ namespace ProductionMicroService.Services
       {
         return Mapper.Map<List<Operation>, List<GetOperationViewModel>>(
           ProductionContext.OperationsToMachines
-            .Include(mto => mto.Operation)
             .Where(x => x.MachineId == machineId)
-            .Select(x => x.Operation).ToList());
+            .Include(mto => mto.Operation)
+            .Select(x => x.Operation)
+            .ToList());
       }
       catch (Exception e)
       {

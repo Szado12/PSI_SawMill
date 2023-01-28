@@ -11,7 +11,10 @@ namespace StoreMicroService.Services
   {
     public Result<int> AddProduct(AddProductViewModel product)
     {
-      var exist = StoreContext.Products.FirstOrDefault(x => x.WoodTypeId == product.WoodTypeId && x.ProductTypeId == product.ProductTypeId && Math.Abs(x.Price - product.Price) < 0.001);
+      var exist = StoreContext.Products.FirstOrDefault(x => x.WoodTypeId == product.WoodTypeId 
+                                                            && x.ProductTypeId == product.ProductTypeId 
+                                                            && !x.IsArchived
+                                                            && Math.Abs(x.Price - product.Price) < 0.001);
       if (exist != null)
         return Result.Failure<int>($"Product with this specification already exist id:{exist.ProductId}");
 
@@ -28,12 +31,17 @@ namespace StoreMicroService.Services
 
     public Result<int> RemoveProduct(int productId)
     {
-      throw new NotImplementedException();
+      var exist = StoreContext.Products.FirstOrDefault(x => x.ProductId == productId);
+      if (exist != null)
+        return Result.Failure<int>($"Product with id:{exist.ProductId} doesn't exist");
+
+      exist.IsArchived = true;
+      return Result.Success(productId);
     }
 
     public Result<int> UpdateProduct(UpdateProductViewModel product)
     {
-      var productToUpdate = StoreContext.Products.FirstOrDefault(x => x.ProductId == product.ProductId);
+      var productToUpdate = StoreContext.Products.FirstOrDefault(x => x.ProductId == product.ProductId && !x.IsArchived);
       if (productToUpdate == null)
         return Result.Failure<int>($"Product with id:{product.ProductId} doesn't exist");
 
@@ -49,6 +57,7 @@ namespace StoreMicroService.Services
       try
       {
         return Result.Success(Mapper.Map<List<Product>, List<GetProductViewModel>>(StoreContext.Products
+          .Where(x => !x.IsArchived)
           .Include(x=>x.WoodType)
           .Include(x=>x.ProductType)
           .Include(x=>x.WarehousesToProducts)
@@ -65,6 +74,7 @@ namespace StoreMicroService.Services
       try
       {
         return Result.Success(Mapper.Map<Product,GetProductViewModel>(StoreContext.Products
+          .Where(x => !x.IsArchived)
           .Include(x => x.WoodType)
           .Include(x => x.ProductType)
           .Include(x => x.WarehousesToProducts)
@@ -74,11 +84,6 @@ namespace StoreMicroService.Services
       {
         return Result.Failure<GetProductViewModel>(e.Message);
       }
-    }
-
-    public Result<List<ProductTypeModel>> GetProductTypes()
-    {
-      return Result.Success(Mapper.Map<List<ProductType>, List<ProductTypeModel>>(StoreContext.ProductTypes.ToList()));
     }
 
     public Result<string> ReserveProductInStore(List<ProductIdAndAmount> reserveItemList)

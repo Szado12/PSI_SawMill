@@ -58,6 +58,61 @@ namespace ProductionMicroService.Services
           $"Machine with id:{addProductionPlan.MachineId} is not compatible with operation {addProductionPlan.OperationId}");
 
 
+      var productionPlansForMachine =
+        ProductionContext.ProductionDetails
+          .Where(x => x.MachineId == addProductionPlan.MachineId && !x.IsArchived)
+          .Include(x => x.Operation);
+
+      var isFree = true;
+      ProductionDetail productionDetail = null;
+      DateTime startTime = DateTime.Now;
+      DateTime endTime = DateTime.Now;
+
+      foreach (var productionPlan in productionPlansForMachine)
+      {
+        startTime = productionPlan.StartDate;
+        endTime =
+          productionPlan.StartDate.AddHours(productionPlan.MaterialAmount * productionPlan.Operation.Duration);
+        if (startTime <= addProductionPlan.StartDate
+            && endTime > addProductionPlan.StartDate)
+        {
+          isFree = false;
+          productionDetail = productionPlan;
+          break;
+        }
+      }
+
+      if (!isFree)
+      {
+        return Result.Failure<int>(
+          $"Machine is engaged by operation:{productionDetail.ProductionDetailId} in time {startTime} - {endTime}");
+      }
+
+      var productionPlansForEmployee =
+        ProductionContext.ProductionDetails
+          .Where(x => x.EmployeeId == addProductionPlan.EmployeeId && !x.IsArchived)
+          .Include(x=>x.Operation);
+
+      foreach (var productionPlan in productionPlansForEmployee)
+      {
+        startTime = productionPlan.StartDate;
+        endTime =
+          productionPlan.StartDate.AddHours(productionPlan.MaterialAmount * productionPlan.Operation.Duration);
+        if (startTime <= addProductionPlan.StartDate
+            && endTime > addProductionPlan.StartDate)
+        {
+          isFree = false;
+          productionDetail = productionPlan;
+          break;
+        }
+      }
+
+      if (!isFree)
+      {
+        return Result.Failure<int>(
+          $"Employee is engaged by operation:{productionDetail.ProductionDetailId} in time {startTime} - {endTime}");
+      }
+
       Result<List<EmployeeView>> machineWorkers = await HttpService.GetMachineWorkers();
 
       if (machineWorkers.IsFailure)
@@ -99,7 +154,9 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<List<ProductionDetail>, List<GetProductionPlanViewModel>>(
-            ProductionContext.ProductionDetails.Where(x => x.IsArchived == false).ToList()));
+            ProductionContext.ProductionDetails
+              .Where(x => !x.IsArchived)
+              .ToList()));
       }
       catch (Exception e)
       {
@@ -110,7 +167,7 @@ namespace ProductionMicroService.Services
     public Result<GetProductionPlanViewModel> GetProductionPlanById(int productionPlanId)
     {
       var productionPlanToBeArchived =
-        ProductionContext.ProductionDetails.FirstOrDefault(x => x.OperationId == productionPlanId && x.IsArchived == false);
+        ProductionContext.ProductionDetails.FirstOrDefault(x => x.OperationId == productionPlanId && !x.IsArchived);
       if (productionPlanToBeArchived == null)
         return Result.Failure<GetProductionPlanViewModel>($"Production plan with id:{productionPlanId} doesn't exist");
       return Result.Success(Mapper.Map<ProductionDetail, GetProductionPlanViewModel>(productionPlanToBeArchived));
@@ -122,7 +179,9 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<List<ProductionDetail>, List<GetProductionPlanViewModel>>(
-            ProductionContext.ProductionDetails.Where(x => x.IsArchived == false && x.EmployeeId == employeeId).ToList()));
+            ProductionContext.ProductionDetails
+              .Where(x => !x.IsArchived && x.EmployeeId == employeeId)
+              .ToList()));
       }
       catch (Exception e)
       {
@@ -136,7 +195,9 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<List<ProductionDetail>, List<GetProductionPlanViewModel>>(
-            ProductionContext.ProductionDetails.Where(x => x.IsArchived == false && x.MachineId == machineId).ToList()));
+            ProductionContext.ProductionDetails
+              .Where(x => !x.IsArchived && x.MachineId == machineId)
+              .ToList()));
       }
       catch (Exception e)
       {
@@ -150,7 +211,9 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<List<ProductionDetail>, List<GetProductionPlanViewModel>>(
-            ProductionContext.ProductionDetails.Where(x => x.IsArchived == false && x.OperationId == operationId).ToList()));
+            ProductionContext.ProductionDetails
+              .Where(x => !x.IsArchived && x.OperationId == operationId)
+              .ToList()));
       }
       catch (Exception e)
       {
@@ -164,7 +227,9 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(
           Mapper.Map<List<ProductionDetail>, List<GetProductionPlanViewModel>>(
-            ProductionContext.ProductionDetails.Where(x => x.IsArchived == false && x.Status == stateId).ToList()));
+            ProductionContext.ProductionDetails
+              .Where(x => !x.IsArchived && x.Status == stateId)
+              .ToList()));
       }
       catch (Exception e)
       {
