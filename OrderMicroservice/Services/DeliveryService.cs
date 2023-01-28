@@ -26,8 +26,8 @@ namespace OrderMicroservice.Services
 
             if (result != null)
                 return Result.Success(result);
-            else
-                return Result.Failure<List<DeliveryView>>("Fetching deliveries failed.");
+            
+            return Result.Failure<List<DeliveryView>>("Fetching deliveries failed.");
         }
 
         public Result<DeliveryView> GetDeliveryById(int id)
@@ -44,8 +44,8 @@ namespace OrderMicroservice.Services
 
             if (result != null)
                 return Result.Success(result);
-            else
-                return Result.Failure<DeliveryView>($"Fetching delivery with id {id} failed.");
+            
+            return Result.Failure<DeliveryView>($"Fetching delivery with id {id} failed.");
         }
 
         public Result<DeliveryView> GetDeliveryByOrderId(int id)
@@ -62,8 +62,8 @@ namespace OrderMicroservice.Services
 
             if (result != null)
                 return Result.Success(result);
-            else
-                return Result.Failure<DeliveryView>($"Fetching delivery with order id {id} failed.");
+            
+            return Result.Failure<DeliveryView>($"Fetching delivery with order id {id} failed.");
         }
 
         public Result<List<DeliveryStateView>> GetDeliveryStates()
@@ -72,13 +72,13 @@ namespace OrderMicroservice.Services
 
             if (result != null)
                 return Result.Success(result);
-            else
-                return Result.Failure<List<DeliveryStateView>>($"Fetching delivery states failed.");
+            
+            return Result.Failure<List<DeliveryStateView>>($"Fetching delivery states failed.");
         }
 
         public Result<DeliveryView> UpdateDelivery(int id, int? stateId, int? delivererId)
         {
-            var deliveryToEdit = ClientOrderContext.Deliveries.Where(x => x.DeliveryId == id).FirstOrDefault();
+            var deliveryToEdit = ClientOrderContext.Deliveries.FirstOrDefault(x => x.DeliveryId == id);
             if (deliveryToEdit == null)
                 return Result.Failure<DeliveryView>($"Updating delivery with id {id} failed.");
 
@@ -94,8 +94,8 @@ namespace OrderMicroservice.Services
 
             if (ClientOrderContext.SaveChanges() > 0)
                 return GetDeliveryById(deliveryToEdit.DeliveryId);
-            else
-                return Result.Failure<DeliveryView>($"Updating delivery with id {id} failed.");
+            
+            return Result.Failure<DeliveryView>($"Updating delivery with id {id} failed.");
         }
     }
 }

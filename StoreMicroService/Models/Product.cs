@@ -13,6 +13,8 @@ public partial class Product
 
     public int WoodTypeId { get; set; }
 
+    public bool IsArchived { get; set; }
+
     public virtual ProductType ProductType { get; set; } = null!;
 
     public virtual ICollection<WarehousesToProduct> WarehousesToProducts { get; } = new List<WarehousesToProduct>();

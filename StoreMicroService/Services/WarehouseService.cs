@@ -46,6 +46,9 @@ namespace StoreMicroService.Services
         if (addressToBeUpdated == null)
           throw new Exception($"Address for warehouse with id:{updateWarehouse.WarehouseId} doesn't exist");
 
+        if(updateWarehouse.StoredProducts.Sum(x=>x.Amount) > updateWarehouse.Capacity)
+          throw new Exception($"Warehouse has maximum capacity of {updateWarehouse.Capacity}");
+
         addressToBeUpdated.City = updateWarehouse.Address.City;
         addressToBeUpdated.Street = updateWarehouse.Address.Street;
         addressToBeUpdated.PostalCode = updateWarehouse.Address.PostalCode;
@@ -107,8 +110,12 @@ namespace StoreMicroService.Services
       {
         var warehouse = StoreContext.Warehouses
           .Include(x => x.Address)
-          .Include("WarehousesToProducts.Product.WoodType")
-          .Include("WarehousesToProducts.Product.ProductType")
+          .Include(x=>x.WarehousesToProducts)
+          .ThenInclude(x=>x.Product)
+          .ThenInclude(x=>x.WoodType)
+          .Include(x => x.WarehousesToProducts)
+          .ThenInclude(x => x.Product)
+          .ThenInclude(x => x.ProductType)
           .FirstOrDefault(x => x.WarehouseId == warehouseId);
         if (warehouse == null)
           throw new Exception($"Warehouse with id:{warehouseId} doesn't exist");

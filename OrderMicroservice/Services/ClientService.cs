@@ -21,21 +21,21 @@ namespace OrderMicroservice.Services
             ClientOrderContext.Add(clientToAdd);
             if (ClientOrderContext.SaveChanges() > 0)
                 return GetClient(clientToAdd.ClientId);
-            else
-                return Result.Failure<ClientDetails>("Adding client failed.");
+            
+            return Result.Failure<ClientDetails>("Adding client failed.");
         }
 
         public Result<bool> DeleteClient(int clientId)
         {
-            var clientToDelete = ClientOrderContext.Clients.Where(x => x.ClientId == clientId).FirstOrDefault();
+          var clientToDelete = ClientOrderContext.Clients.FirstOrDefault(x => x.ClientId == clientId);
             if (clientToDelete == null)
                 return Result.Failure<bool>($"Client with id {clientId} not found.");
 
             clientToDelete.IsArchived = true;
             if (ClientOrderContext.SaveChanges() > 0)
                 return Result.Success(true);
-            else
-                return Result.Failure<bool>($"Deleting client with id {clientId} failed.");
+            
+            return Result.Failure<bool>($"Deleting client with id {clientId} failed.");
 
         }
 
@@ -57,17 +57,17 @@ namespace OrderMicroservice.Services
 
             if (ClientOrderContext.SaveChanges() > 0)
                 return GetClient(clientId);
-            else
-                return Result.Failure<ClientDetails>($"Editing client with id {clientId} failed.");
+            
+            return Result.Failure<ClientDetails>($"Editing client with id {clientId} failed.");
         }
 
         public Result<ClientDetails> GetClient(int clientId)
         {
-            var result = ClientOrderContext.Clients.Where(x => x.ClientId == clientId).Include(x => x.Address).Select(Mapper.Map<Client, ClientDetails>).FirstOrDefault();
+            var result = ClientOrderContext.Clients.Where(x => x.ClientId == clientId).Include(x => x.Address).FirstOrDefault();
             if (result != null)
-                return Result.Success(result);
-            else
-                return Result.Failure<ClientDetails>($"Fetching client data with id {clientId} failed.");
+                return Result.Success(Mapper.Map <Client, ClientDetails>(result));
+            
+            return Result.Failure<ClientDetails>($"Fetching client data with id {clientId} failed.");
         }
 
         public Result<List<ClientDetails>> GetClients()
@@ -75,8 +75,8 @@ namespace OrderMicroservice.Services
             var result = ClientOrderContext.Clients.Where(x => !x.IsArchived).Include(x => x.Address).Select(Mapper.Map<Client, ClientDetails>).ToList();
             if (result != null)
                 return Result.Success(result);
-            else
-                return Result.Failure<List<ClientDetails>>($"Fetching clients data failed.");
+           
+            return Result.Failure<List<ClientDetails>>($"Fetching clients data failed.");
         }
     }
 }

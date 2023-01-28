@@ -58,7 +58,7 @@ namespace ProductionMicroService.Services
           .FirstOrDefault(o => o.MachineId == machineId);
         if (deleteOperation == null)
           return Result.Failure<int>($"Machine with id:{deleteOperation.MachineId} doesn't exist");
-        if (deleteOperation.ProductionDetails.Count(x => x.IsArchived == false) > 0)
+        if (deleteOperation.ProductionDetails.Count(x => !x.IsArchived) > 0)
         {
           return Result.Failure<int>($"Machine with id:{deleteOperation.MachineId} has active production plans");
         }
@@ -97,7 +97,7 @@ namespace ProductionMicroService.Services
 
         foreach (var operationId in updateMachine.AvailableOperationIds)
         {
-          ProductionContext.OperationsToMachines.Add(new OperationsToMachine()
+          ProductionContext.OperationsToMachines.Add(new OperationsToMachine
             { MachineId = machineToBeUpdated.MachineId, OperationId = operationId });
         }
         ProductionContext.SaveChanges();
@@ -118,7 +118,7 @@ namespace ProductionMicroService.Services
             ProductionContext.Machines
               .Include(x => x.OperationsToMachines)
               .ThenInclude(x => x.Operation)
-              .First(x => x.MachineId == machineId && x.IsArchived == false)));
+              .First(x => x.MachineId == machineId && !x.IsArchived)));
       }
       catch (Exception e)
       {
@@ -132,7 +132,7 @@ namespace ProductionMicroService.Services
       {
         return Result.Success(Mapper.Map<List<Machine>, List<GetMachineViewModel>>(
           ProductionContext.Machines
-            .Where(x => x.IsArchived == false)
+            .Where(x => !x.IsArchived)
             .Include(x => x.OperationsToMachines)
             .ThenInclude(x => x.Operation)
             .ToList()));
@@ -154,8 +154,8 @@ namespace ProductionMicroService.Services
       {
         return Mapper.Map<List<Machine>, List<GetMachineViewModel>>(
           ProductionContext.OperationsToMachines
-            .Include(mto => mto.Machine)
             .Where(x => x.OperationId == operationId)
+            .Include(mto => mto.Machine)
             .Select(x => x.Machine).ToList());
       }
       catch (Exception e)

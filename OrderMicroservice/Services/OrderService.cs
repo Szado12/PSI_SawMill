@@ -46,7 +46,7 @@ namespace OrderMicroservice.Services
 
         public Result<bool> DeleteOrder(int id)
         {
-            var orderToCancel = ClientOrderContext.Orders.Where(x => x.OrderId == id).FirstOrDefault();
+          var orderToCancel = ClientOrderContext.Orders.FirstOrDefault(x => x.OrderId == id);
             if (orderToCancel == null)
                 return Result.Failure<bool>($"Order with id {id} not found.");
             orderToCancel.OrderStateId = (int)OrderStateEnum.Cancelled;
@@ -114,7 +114,7 @@ namespace OrderMicroservice.Services
 
         public Result<OrderView> UpdateOrder(int id, int orderState)
         {
-            var orderToEdit = ClientOrderContext.Orders.Where(x => x.OrderId == id).FirstOrDefault();
+            var orderToEdit = ClientOrderContext.Orders.FirstOrDefault(x => x.OrderId == id);
             if (orderToEdit == null)
                 return Result.Failure<OrderView>($"Fetching order with id {id} failed.");
 
