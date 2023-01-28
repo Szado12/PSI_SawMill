@@ -90,6 +90,20 @@ services:
       - authorization-microservice
       - database
 
+  nginx: 
+    container_name: nginx
+    image: nginx
+    depends_on: 
+      - authorization-microservice
+      - store-microservice
+      - employee-microservice
+      - production-microservice
+      - order-microservice
+    ports: 
+      - "8080:8080"
+    build:
+      context: ./nginx
+
   database:
     container_name: database
     image: database
