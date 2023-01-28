@@ -107,15 +107,20 @@ namespace AuthorizationMicroService.Services.Implementation
       return principal;
     }
 
-    Tuple<string, string> IJwtService.LogIn(UserData userData)
+    UserDataWithTokens IJwtService.LogIn(UserData userData)
     {
-      if (userData == null)
-      {
-        return null;
-      }
       string token = GenerateToken(userData);
       string refreshToken = GenerateRefreshToken(userData.LoginId);
-      return new Tuple<string, string>(token, refreshToken);
+
+      return new UserDataWithTokens
+      {
+        Name = userData.Name,
+        Surname = userData.Surname,
+        UserId = userData.UserId,
+        RoleId = userData.RoleId,
+        RefreshToken = refreshToken,
+        Token = token
+      };
     }
   }
 
