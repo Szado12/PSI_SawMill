@@ -47,8 +47,8 @@ namespace ProductionMicroService.Services
         if (updateOperation == null)
           return Result.Failure<int>($"Operation with id:{operationViewModel.OperationId} doesn't exist");
 
-        var updatedOperation = Mapper.Map<UpdateOperationViewModel, Operation>(operationViewModel);
-        ProductionContext.Entry(updatedOperation).CurrentValues.SetValues(updatedOperation);
+        var updatedOperationValues = Mapper.Map<UpdateOperationViewModel, Operation>(operationViewModel);
+        ProductionContext.Entry(updateOperation).CurrentValues.SetValues(updatedOperationValues);
         ProductionContext.SaveChanges();
         return Result.Success(updateOperation.OperationId);
       }
