@@ -49,14 +49,14 @@ namespace ProductionMicroService.Controllers
       return _productionPlanService.DeleteProductionPlan(id).ToActionResult();
     }
 
-    [HttpDelete]
+    [HttpPost]
     [Route("MoveToNextState/{id}")]
     public async Task<IActionResult> MoveToNextStateAsync([FromRoute] int id)
     {
       return (await _productionPlanService.UpdateState(id)).ToActionResult();
     }
 
-    [HttpDelete]
+    [HttpPost]
     [Route("MoveToErrorState/{id}")]
     public async Task<IActionResult> MoveToErrorStateAsync([FromRoute] int id)
     {
