@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 builder.Services.AddSingleton<IProductService, ProductService>(x=> new ProductService(context));
 builder.Services.AddSingleton<IWoodTypeService, WoodTypeService>(x => new WoodTypeService(context));
 builder.Services.AddSingleton<IProductTypeService, ProductTypeService>(x => new ProductTypeService(context));
