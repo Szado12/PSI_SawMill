@@ -43,9 +43,10 @@ namespace ProductionMicroService.Controllers
     }
 
     [HttpDelete]
-    public IActionResult DeleteOperation (int operationId)
+    [Route("{id}")]
+    public IActionResult DeleteOperation ([FromRoute] int id)
     {
-      return _operationService.DeleteOperation(operationId).ToActionResult();
+      return _operationService.DeleteOperation(id).ToActionResult();
     }
   }
 }

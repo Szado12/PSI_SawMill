@@ -43,9 +43,10 @@ namespace ProductionMicroService.Controllers
     }
     
     [HttpDelete]
-    public IActionResult ArchiveProductionPlans(int productionPlanId)
+    [Route("{id}")]
+    public IActionResult ArchiveProductionPlans([FromRoute] int id)
     {
-      return _productionPlanService.DeleteProductionPlan(productionPlanId).ToActionResult();
+      return _productionPlanService.DeleteProductionPlan(id).ToActionResult();
     }
   }
 }

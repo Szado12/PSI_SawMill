@@ -50,10 +50,10 @@ namespace ProdcutionMicroService.Controllers
     }
 
     [HttpDelete]
-    [Route("{machineId}")]
-    public IActionResult ArchiveMachine([FromRoute] int machineId)
+    [Route("{id}")]
+    public IActionResult ArchiveMachine([FromRoute] int id)
     {
-      return _machineService.DeleteMachine(machineId).ToActionResult();
+      return _machineService.DeleteMachine(id).ToActionResult();
     }
   }
 }
