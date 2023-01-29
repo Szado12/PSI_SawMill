@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProductionMicroService.Models;
@@ -81,20 +82,6 @@ namespace ProductionMicroService.Services
       }
     }
 
-    public Result<GetOperationViewModel> GetOperationById(int operationId)
-    {
-      try
-      {
-        return Result.Success(
-          Mapper.Map<Operation, GetOperationViewModel>(
-            ProductionContext.Operations.First(x => x.OperationId == operationId && !x.IsArchived)));
-      }
-      catch (Exception e)
-      {
-        return Result.Failure<GetOperationViewModel>($"Operation with id {operationId} doesn't exist");
-      }
-    }
-
     public Result<List<GetOperationViewModel>> GetAllOperations()
     {
       try
@@ -104,6 +91,24 @@ namespace ProductionMicroService.Services
       catch (Exception e)
       {
         return Result.Failure<List<GetOperationViewModel>>(e.Message);
+      }
+    }
+
+    public Result<GetDetailsOperationViewModel> GetOperationById(int operationId)
+    {
+      try
+      {
+        return Mapper.Map<Operation, GetDetailsOperationViewModel> (
+          ProductionContext.Operations
+            .Where(x => !x.IsArchived && x.OperationId == operationId)
+            .Include(x=>x.SourceProductType)
+            .Include(x=>x.OutputProductType)
+            .First()
+        );
+      }
+      catch (Exception e)
+      {
+        return Result.Failure<GetDetailsOperationViewModel>(e.Message);
       }
     }
 

@@ -24,6 +24,13 @@ namespace ProductionMicroService.Controllers
     }
 
     [HttpGet]
+    [Route("{id}")]
+    public IActionResult GetOperationById([FromRoute] int id)
+    {
+      return _operationService.GetOperationById(id).ToActionResult();
+    }
+
+    [HttpGet]
     [Route("machine/{machineId}")]
     public IActionResult GetOperationsByMachine([FromRoute] int machineId)
     {
